@@ -1,3 +1,9 @@
 from django.db import models
 
-# Create your models here.
+class Role(models.Model):
+    role_name = models.CharField(max_length=50)
+
+# class User(models.Model):
+#     role = models.ForeignKey(Role, on_delete=models.CASCADE)
+#     name = models.CharField(max_length=100)
+#     password = models.CharField(max_length=100)
