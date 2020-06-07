@@ -12,7 +12,7 @@
 <ul>
   {% for obj in files %}
   <li>
-    <a href="{{ obj }}">{{ obj.file.document.name}}</a>
+    <a href="download/{{ obj.url }}">{{ obj.file.name}}</a>
     <small>(Created at: {{ obj.created_at }})</small>
   </li>
   {% endfor %}

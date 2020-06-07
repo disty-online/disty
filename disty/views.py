@@ -1,9 +1,10 @@
 import datetime
+import os
 from django.shortcuts import render, redirect
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
 from disty.models import User, File, Url
-from django.http import HttpResponse
+from django.http import HttpResponse, Http404
 from disty.forms import FileForm
 from django.utils import timezone
 
@@ -41,6 +42,8 @@ def model_form_upload(request):
         if form.is_valid():
             file = form.save(commit=False)
             file.owner = owner
+            file.created_at = now
+            file.name = file.document.name
             file.save()
             url = Url(expiry=tomorrow, created_at=now, owner=owner, file=file)
             url.save()
@@ -48,3 +51,17 @@ def model_form_upload(request):
     else:
         form = FileForm()
     return render(request, "disty/model_form_upload.html", {"form": form})
+
+
+def download(request, uuid):
+    url = Url.objects.get(url=uuid)
+    file = url.file.name
+    file_path = os.path.join("documents", file)
+    if os.path.exists(file_path):
+        with open(file_path, "rb") as fh:
+            response = HttpResponse(fh.read(), content_type="application/vnd.ms-excel")
+            response["Content-Disposition"] = "inline; filename=" + os.path.basename(
+                file_path
+            )
+            return response
+    raise Http404

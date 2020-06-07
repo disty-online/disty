@@ -31,7 +31,8 @@ class File(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
-        return "/".join([self.storage_location, self.path, self.name])
+        return str(self.name)
+        # return "/".join([self.storage_location, self.path, self.name])
 
 
 class Url(models.Model):
