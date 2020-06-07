@@ -1,11 +1,10 @@
 import datetime
-from django.test import TestCase
-from django.utils import timezone
-import pytz
-import pytest
-from disty.models import Role, User, File, Url
 import uuid
 from unittest.mock import patch
+from django.test import TestCase
+from django.utils import timezone
+import pytest
+from disty.models import Role, User, File, Url
 
 # Create your tests here.
 

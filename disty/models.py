@@ -6,7 +6,7 @@ class Role(models.Model):
     role_name = models.CharField(max_length=50)
 
     def __str__(self):
-        return self.role_name
+        return str(self.role_name)
 
 
 class User(models.Model):
@@ -15,7 +15,7 @@ class User(models.Model):
     password = models.CharField(max_length=100)
 
     def __str__(self):
-        return self.name
+        return str(self.name)
 
 
 class File(models.Model):
@@ -41,7 +41,7 @@ class Url(models.Model):
     file = models.ForeignKey(File, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.url
+        return str(self.url)
 
     def generate_url(self) -> str:
         base_url = "http://localhost/file/"
