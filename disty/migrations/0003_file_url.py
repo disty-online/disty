@@ -7,34 +7,65 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('disty', '0002_user'),
+        ("disty", "0002_user"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='File',
+            name="File",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(db_index=True, max_length=100)),
-                ('checksum', models.CharField(max_length=150)),
-                ('storage_location', models.CharField(max_length=100)),
-                ('path', models.CharField(max_length=256)),
-                ('origin', models.CharField(max_length=100)),
-                ('password', models.CharField(max_length=100)),
-                ('created_at', models.DateTimeField(verbose_name='created at')),
-                ('owner', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='disty.User')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(db_index=True, max_length=100)),
+                ("checksum", models.CharField(max_length=150)),
+                ("storage_location", models.CharField(max_length=100)),
+                ("path", models.CharField(max_length=256)),
+                ("origin", models.CharField(max_length=100)),
+                ("password", models.CharField(max_length=100)),
+                ("created_at", models.DateTimeField(verbose_name="created at")),
+                (
+                    "owner",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="disty.User"
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Url',
+            name="Url",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('expiry', models.DateTimeField(verbose_name='created at')),
-                ('download_count', models.IntegerField(default=0)),
-                ('url', models.CharField(max_length=250)),
-                ('created_at', models.DateTimeField(verbose_name='created at')),
-                ('file', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='disty.File')),
-                ('owner', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='disty.User')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("expiry", models.DateTimeField(verbose_name="created at")),
+                ("download_count", models.IntegerField(default=0)),
+                ("url", models.CharField(max_length=250)),
+                ("created_at", models.DateTimeField(verbose_name="created at")),
+                (
+                    "file",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="disty.File"
+                    ),
+                ),
+                (
+                    "owner",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="disty.User"
+                    ),
+                ),
             ],
         ),
     ]
