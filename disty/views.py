@@ -5,6 +5,7 @@ from django.conf import settings
 from django.core.files.storage import FileSystemStorage
 from disty.models import User, File, Url, Access
 from django.http import HttpResponse, Http404
+from django.core.exceptions import PermissionDenied
 from disty.forms import FileForm
 from django.utils import timezone
 
@@ -55,6 +56,8 @@ def model_form_upload(request):
 
 def download(request, uuid):
     url = Url.objects.get(url=uuid)
+    if url.expiry < timezone.now():
+        raise PermissionDenied
     file = url.file.name
     source_ip = get_client_ip(request)
     user_agent = request.META.get("HTTP_USER_AGENT", "")
