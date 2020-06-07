@@ -1,3 +1,4 @@
+import uuid
 from django.db import models
 
 
@@ -27,6 +28,9 @@ class File(models.Model):
     created_at = models.DateTimeField("created at")
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return "/".join([self.storage_location, self.path, self.name])
+
 
 class Url(models.Model):
     expiry = models.DateTimeField("created at")
@@ -35,3 +39,11 @@ class Url(models.Model):
     created_at = models.DateTimeField("created at")
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     file = models.ForeignKey(File, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.url
+
+    def generate_url(self) -> str:
+        base_url = "http://localhost/file/"
+        uniq_id = uuid.uuid4()
+        return f"{base_url}{uniq_id}"
