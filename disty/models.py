@@ -19,13 +19,15 @@ class User(models.Model):
 
 
 class File(models.Model):
+    document = models.FileField(upload_to="documents/")
     name = models.CharField(max_length=100, db_index=True)
+    description = models.CharField(max_length=255, blank=True)
     checksum = models.CharField(max_length=150)
     storage_location = models.CharField(max_length=100)
     path = models.CharField(max_length=256)
     origin = models.CharField(max_length=100)
     password = models.CharField(max_length=100)
-    created_at = models.DateTimeField("created at")
+    created_at = models.DateTimeField(auto_now_add=True)
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
@@ -33,20 +35,16 @@ class File(models.Model):
 
 
 class Url(models.Model):
-    expiry = models.DateTimeField("created at")
+    expiry = models.DateTimeField("expiry at")
     download_count = models.IntegerField(default=0)
-    url = models.CharField(max_length=250)
+    url = models.UUIDField(default=uuid.uuid4, editable=False)
     created_at = models.DateTimeField("created at")
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     file = models.ForeignKey(File, on_delete=models.CASCADE)
 
     def __str__(self):
-        return str(self.url)
-
-    def generate_url(self) -> str:
         base_url = "http://localhost/file/"
-        uniq_id = uuid.uuid4()
-        return f"{base_url}{uniq_id}"
+        return f"{base_url}{self.url}"
 
 
 class Access(models.Model):
