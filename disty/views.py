@@ -13,8 +13,9 @@ def hello(request):
 
 
 def home(request):
-    files = File.objects.all()
-    return render(request, "disty/home.html", {"files": files})
+
+    urls = Url.objects.all()
+    return render(request, "disty/home.html", {"files": urls})
 
 
 def simple_upload(request):
