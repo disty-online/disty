@@ -55,3 +55,6 @@ class Access(models.Model):
     file = models.ForeignKey(File, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     url = models.ForeignKey(Url, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.file.name
