@@ -1,5 +1,6 @@
 import uuid
 from django.db import models
+import hashlib
 
 
 class Role(models.Model):
@@ -30,9 +31,23 @@ class File(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
 
+    def save(self, *args, **kwargs):
+        """
+        Saves file on disc and generates a sha1sum.
+        """
+        super().save(*args, **kwargs)
+        checksum = hashlib.sha1()
+        with open(f"documents/{self.name}", "rb") as file:
+            while True:
+                data = file.read(65536)
+                if not data:
+                    break
+                checksum.update(data)
+        self.checksum = checksum.hexdigest()
+        super().save(*args, **kwargs)
+
     def __str__(self):
         return str(self.name)
-        # return "/".join([self.storage_location, self.path, self.name])
 
 
 class Url(models.Model):
