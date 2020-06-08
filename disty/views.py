@@ -57,6 +57,8 @@ def download(request, uuid):
             response["Content-Disposition"] = "inline; filename=" + os.path.basename(
                 file_path
             )
+            url.download_count += 1
+            url.save()
             return response
     raise Http404
 
