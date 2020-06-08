@@ -10,28 +10,9 @@ from disty.forms import FileForm
 from django.utils import timezone
 
 
-def hello(request):
-    return HttpResponse("hello")
-
-
 def home(request):
-
     urls = Url.objects.all()
     return render(request, "disty/home.html", {"files": urls})
-
-
-def simple_upload(request):
-    if request.method == "POST" and request.FILES["myfile"]:
-        myfile = request.FILES["myfile"]
-        fs = FileSystemStorage()
-        filename = fs.save(myfile.name, myfile)
-        uploaded_file_url = fs.url(filename)
-        return render(
-            request,
-            "disty/simple_upload.html",
-            {"uploaded_file_url": uploaded_file_url},
-        )
-    return render(request, "disty/simple_upload.html")
 
 
 def model_form_upload(request):
@@ -59,23 +40,20 @@ def download(request, uuid):
     if url.expiry < timezone.now():
         raise PermissionDenied
     file = url.file.name
-    source_ip = get_client_ip(request)
-    user_agent = request.META.get("HTTP_USER_AGENT", "")
-    access = Access(
-        source_ip=source_ip,
-        user_agent=user_agent,
+    Access(
+        source_ip=get_client_ip(request),
+        user_agent=request.META.get("HTTP_USER_AGENT", ""),
         timestamp=timezone.now(),
-        file=File.objects.get(name=url.file.name),
+        file=File.objects.get(name=file),
         url=url,
         user=url.owner,
-    )
-    access.save()
+    ).save()
 
     file_path = os.path.join("documents", file)
     if os.path.exists(file_path):
         with open(file_path, "rb") as fh:
             # TODO: Update content_type
-            response = HttpResponse(fh.read(), content_type="application/vnd.ms-excel")
+            response = HttpResponse(fh.read(), content_type="application/octet-stream")
             response["Content-Disposition"] = "inline; filename=" + os.path.basename(
                 file_path
             )
