@@ -8,8 +8,10 @@ from django.http import HttpResponse, Http404
 from django.core.exceptions import PermissionDenied
 from disty.forms import FileForm
 from django.utils import timezone
+from django.contrib.auth.decorators import login_required
 
 
+@login_required
 def home(request):
     urls = Url.objects.all()
     return render(request, "disty/home.html", {"files": urls})
