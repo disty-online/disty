@@ -38,6 +38,8 @@ def model_form_upload(request):
 
 
 def download(request, uuid):
+    if not uuid:
+        raise PermissionDenied
     url = Url.objects.get(url=uuid)
     if url.expiry < timezone.now():
         raise PermissionDenied
