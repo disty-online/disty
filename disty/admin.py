@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 # Register your models here.
-from .models import Role, User, File, Url, Access
+from .models import File, Url, Access
 
 admin.site.site_header = "Disty"
 
@@ -18,8 +18,6 @@ class UrlAdmin(admin.ModelAdmin):
     list_display = ("url", "owner", "file", "created_at", "expiry")
 
 
-admin.site.register(Role)
-admin.site.register(User)
 admin.site.register(File, FileAdmin)
 admin.site.register(Url, UrlAdmin)
 admin.site.register(Access, AccessAdmin)

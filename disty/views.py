@@ -3,7 +3,7 @@ import os
 from django.shortcuts import render, redirect
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
-from disty.models import User, File, Url, Access
+from disty.models import File, Url, Access
 from django.http import HttpResponse, Http404
 from django.core.exceptions import PermissionDenied
 from disty.forms import FileForm

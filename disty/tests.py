@@ -1,24 +1,24 @@
 import datetime
 import uuid
 from unittest.mock import patch
-from django.test import TestCase
+from django.test import TestCase, RequestFactory, Client
 from django.utils import timezone
+from django.urls import reverse
 import pytest
-from disty.models import Role, User, File, Url, Access
+from disty.models import File, Url, Access
+from django.core.files.uploadedfile import SimpleUploadedFile
 
 
 class ModelsTestCase(TestCase):
-    @patch.object(uuid, "uuid4", return_value="my_unique_id")
     @pytest.mark.freeze_time("2020-01-01")
-    def setUp(self, mock_uuid):
+    def setUp(self):
         tomorrow = timezone.now() + datetime.timedelta(days=1)
         Role.objects.create(role_name="admin")
         User.objects.create(
             name="admin_user", password="password", role=Role.objects.get(pk=1)
         )
         File.objects.create(
-            name="myfile.txt",
-            checksum="sjhskjdhskjdhksajd",
+            name="0001.sh",
             storage_location="local",
             path="my_dir/some/path",
             origin="internal",
@@ -34,7 +34,6 @@ class ModelsTestCase(TestCase):
             owner=User.objects.get(pk=1),
             file=File.objects.get(pk=1),
         )
-        url.url = url.generate_url()
         url.save()
         Access.objects.create(
             source_ip="192.168.0.1",
@@ -44,6 +43,9 @@ class ModelsTestCase(TestCase):
             user=User.objects.get(pk=1),
             url=Url.objects.get(pk=1),
         )
+
+    def tearDown(self):
+        File.objects.all().delete()
 
     def test_create_user(self):
         admin = User.objects.get(name="admin_user")
@@ -55,14 +57,23 @@ class ModelsTestCase(TestCase):
         my_url = Url.objects.get(pk=1)
         assert my_url.download_count == 0
         assert str(my_url.owner) == "admin_user"
-        assert str(my_url.file) == "local/my_dir/some/path/myfile.txt"
+        assert str(my_url.file) == "0001.sh"
         assert my_url.expiry == tomorrow
         assert my_url.created_at == timezone.now()
-        assert str(my_url) == "http://localhost/file/my_unique_id"
 
     @pytest.mark.freeze_time("2020-01-01")
     def test_access(self):
         my_access = Access.objects.get(pk=1)
-        assert str(my_access.file) == "local/my_dir/some/path/myfile.txt"
+        assert str(my_access.file) == "0001.sh"
         assert str(my_access.user) == "admin_user"
-        assert str(my_access.url) == "http://localhost/file/my_unique_id"
+
+
+class ViewsTestCase(TestCase):
+    def setUp(self):
+        # Every test needs access to the request factory.
+        self.factory = RequestFactory()
+
+    def test_home(self):
+        response = self.client.get(reverse("home"))
+        assert response.status_code == 200
+        self.assertContains(response, "Model Form Upload")
