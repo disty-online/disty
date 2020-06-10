@@ -22,7 +22,8 @@ class File(models.Model):
         """
         super().save(*args, **kwargs)
         checksum = hashlib.sha1()
-        with open(f"documents/{self.name}", "rb") as file:
+        print(self.document.path)
+        with open(self.document.path, "rb") as file:
             while True:
                 data = file.read(65536)
                 if not data:

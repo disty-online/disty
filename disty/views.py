@@ -54,13 +54,12 @@ def download(request, uuid):
         user=url.owner,
     ).save()
 
-    file_path = os.path.join("documents", file)
-    if os.path.exists(file_path):
-        with open(file_path, "rb") as fh:
+    if os.path.exists(url.file.document.path):
+        with open(url.file.document.path, "rb") as fh:
             # TODO: Update content_type
             response = HttpResponse(fh.read(), content_type="application/octet-stream")
             response["Content-Disposition"] = "inline; filename=" + os.path.basename(
-                file_path
+                url.file.document.path
             )
             url.download_count += 1
             url.save()
