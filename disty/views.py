@@ -17,8 +17,9 @@ def home(request):
     return render(request, "disty/home.html", {"files": urls})
 
 
+@login_required
 def model_form_upload(request):
-    owner = User.objects.get(name="Pingo")
+    owner = request.user
     tomorrow = timezone.now() + datetime.timedelta(days=1)
     now = timezone.now()
     if request.method == "POST":
