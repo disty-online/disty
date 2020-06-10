@@ -48,6 +48,16 @@ class DownloadUrl(models.Model):
         return f"{base_url}{self.url}"
 
 
+class UploadUrl(models.Model):
+    expiry = models.DateTimeField("expiry at")
+    url = models.UUIDField(default=uuid.uuid4, editable=False)
+    created_at = models.DateTimeField("created at")
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,)
+
+    def __str__(self):
+        return f"{self.owner}/{self.url}"
+
+
 class Access(models.Model):
     source_ip = models.GenericIPAddressField()
     user_agent = models.CharField(max_length=1000)
