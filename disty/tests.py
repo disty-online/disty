@@ -5,7 +5,7 @@ from django.test import TestCase, RequestFactory, Client
 from django.utils import timezone
 from django.urls import reverse
 import pytest
-from disty.models import File, Url, Access
+from disty.models import File, DownloadUrl, Access
 from django.core.files.uploadedfile import SimpleUploadedFile
 
 
@@ -27,7 +27,7 @@ class ModelsTestCase(TestCase):
             owner=User.objects.get(pk=1),
         )
 
-        url = Url.objects.create(
+        url = DownloadUrl.objects.create(
             expiry=tomorrow,
             download_count=0,
             created_at=timezone.now(),
@@ -41,7 +41,7 @@ class ModelsTestCase(TestCase):
             timestamp=timezone.now(),
             file=File.objects.get(pk=1),
             user=User.objects.get(pk=1),
-            url=Url.objects.get(pk=1),
+            url=DownloadUrl.objects.get(pk=1),
         )
 
     def tearDown(self):
@@ -54,7 +54,7 @@ class ModelsTestCase(TestCase):
     @pytest.mark.freeze_time("2020-01-01")
     def test_url(self):
         tomorrow = timezone.now() + datetime.timedelta(days=1)
-        my_url = Url.objects.get(pk=1)
+        my_url = DownloadUrl.objects.get(pk=1)
         assert my_url.download_count == 0
         assert str(my_url.owner) == "admin_user"
         assert str(my_url.file) == "0001.sh"

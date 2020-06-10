@@ -3,7 +3,7 @@ import os
 from django.shortcuts import render, redirect
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
-from disty.models import File, Url, Access
+from disty.models import File, DownloadUrl, Access
 from django.http import HttpResponse, Http404
 from django.core.exceptions import PermissionDenied
 from disty.forms import FileForm
@@ -13,7 +13,7 @@ from django.contrib.auth.decorators import login_required
 
 @login_required
 def home(request):
-    urls = Url.objects.all()
+    urls = DownloadUrl.objects.all()
     return render(request, "disty/home.html", {"files": urls})
 
 
@@ -30,7 +30,7 @@ def model_form_upload(request):
             file.created_at = now
             file.name = file.document.name
             file.save()
-            url = Url(expiry=tomorrow, created_at=now, owner=owner, file=file)
+            url = DownloadUrl(expiry=tomorrow, created_at=now, owner=owner, file=file)
             url.save()
             return redirect("home")
     else:
@@ -41,7 +41,7 @@ def model_form_upload(request):
 def download(request, uuid):
     if not uuid:
         raise PermissionDenied
-    url = Url.objects.get(url=uuid)
+    url = DownloadUrl.objects.get(url=uuid)
     if url.expiry < timezone.now():
         raise PermissionDenied
     file = url.file.name

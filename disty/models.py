@@ -35,7 +35,7 @@ class File(models.Model):
         return str(self.name)
 
 
-class Url(models.Model):
+class DownloadUrl(models.Model):
     expiry = models.DateTimeField("expiry at")
     download_count = models.IntegerField(default=0)
     url = models.UUIDField(default=uuid.uuid4, editable=False)
@@ -54,7 +54,7 @@ class Access(models.Model):
     timestamp = models.DateTimeField("timestamp")
     file = models.ForeignKey(File, on_delete=models.CASCADE)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,)
-    url = models.ForeignKey(Url, on_delete=models.CASCADE)
+    url = models.ForeignKey(DownloadUrl, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.file.name
