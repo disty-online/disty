@@ -5,13 +5,13 @@
   </li>
 </ul>
 
-<p>Uploaded files:</p>
+<p>Uploaded files for {{ user }}:</p>
 <ul>
-  {% for obj in files %}
+  {% for obj in files %} {% if obj.owner == user %}
   <li>
-    <a href="download/{{ obj.url }}">{{ obj.file.name}}</a>
+    <a href="download/{{ obj.url }}">{{ obj.file.name}} - {{ obj.owner }}</a>
     <small>(Created at: {{ obj.created_at }})</small>
   </li>
-  {% endfor %}
+  {% endif %} {% endfor %}
 </ul>
 {% endblock %}

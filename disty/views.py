@@ -14,7 +14,9 @@ from django.contrib.auth.decorators import login_required
 @login_required
 def home(request):
     urls = DownloadUrl.objects.all()
-    return render(request, "disty/home.html", {"files": urls})
+    user = request.user
+    print("THis is the request user : ", user)
+    return render(request, "disty/home.html", {"files": urls, "user": user})
 
 
 @login_required
