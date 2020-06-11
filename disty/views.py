@@ -9,12 +9,14 @@ from django.core.exceptions import PermissionDenied
 from disty.forms import FileForm
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 
 
 @login_required
 def home(request):
-    urls = DownloadUrl.objects.all()
-    return render(request, "disty/home.html", {"files": urls})
+    user = User.objects.get(username=request.user)
+    urls = DownloadUrl.objects.filter(owner=user.id)
+    return render(request, "disty/home.html", {"files": urls, "user": user})
 
 
 @login_required
