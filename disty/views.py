@@ -16,7 +16,7 @@ from django.contrib.auth.models import User
 def home(request):
     user = User.objects.get(username=request.user)
     urls = DownloadUrl.objects.filter(owner=user.id)
-    return render(request, "disty/home.html", {"files": urls, "user": user})
+    return render(request, "disty/home.html", {"urls": urls, "user": user})
 
 
 @login_required

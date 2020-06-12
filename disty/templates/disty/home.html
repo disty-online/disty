@@ -7,11 +7,14 @@
 
 <p>Uploaded files for {{ user }}:</p>
 <ul>
-  {% for obj in files %} {% if obj.owner == user %}
+  {% for obj in urls %}
   <li>
     <a href="download/{{ obj.url }}">{{ obj.file.name}} - {{ obj.owner }}</a>
-    <small>(Created at: {{ obj.created_at }})</small>
+    <small
+      >(Created at: {{ obj.created_at }}) - accessed {{ obj.download_count }}
+      times</small
+    >
   </li>
-  {% endif %} {% endfor %}
+  {% endfor %}
 </ul>
 {% endblock %}
