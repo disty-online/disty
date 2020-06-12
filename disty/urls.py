@@ -7,6 +7,7 @@ from disty import views
 
 urlpatterns = [
     url(r"^$", views.home, name="home"),
+    url(r"^access/", views.access, name="access"),
     url(r"^uploads/form/$", views.model_form_upload, name="model_form_upload"),
     url(r"^download/(?P<uuid>.*)$", views.download, name="download"),
 ]

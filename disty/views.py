@@ -20,6 +20,17 @@ def home(request):
 
 
 @login_required
+def access(request):
+    user = User.objects.get(username=request.user)
+    urls = DownloadUrl.objects.filter(owner=user.id)
+    ids = [url.id for url in urls]
+    accesses = Access.objects.filter(url__in=ids)
+    return render(
+        request, "disty/access.html", {"urls": urls, "user": user, "accesses": accesses}
+    )
+
+
+@login_required
 def model_form_upload(request):
     owner = request.user
     tomorrow = timezone.now() + datetime.timedelta(days=1)

@@ -1,0 +1,12 @@
+{% extends 'base.html' %} {% block content %}
+
+<p>Uploaded files for {{ user }}:</p>
+<ul>
+  {% for access in accesses %}
+  <li>
+    [{{ access.timestamp }}] - {{ access.source_ip }} {{ access.url }}
+    {{access.file }} - ({{ access.user }})
+  </li>
+  {% endfor %}
+</ul>
+{% endblock %}
