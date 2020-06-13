@@ -6,7 +6,7 @@ from django.core.files.storage import FileSystemStorage
 from disty.models import File, DownloadUrl, Access, UploadUrl
 from django.http import HttpResponse, Http404
 from django.core.exceptions import PermissionDenied
-from disty.forms import FileForm, UploadUrlForm
+from disty.forms import FileForm, UploadUrlForm, DownloadUrlForm
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
@@ -88,21 +88,33 @@ def model_form_upload(request):
     tomorrow = timezone.now() + datetime.timedelta(days=1)
     now = timezone.now()
     if request.method == "POST":
-        form = FileForm(request.POST, request.FILES)
-        if form.is_valid():
-            file = form.save(commit=False)
+        file_form = FileForm(request.POST, request.FILES)
+        url_form = DownloadUrlForm(request.POST)
+        if file_form.is_valid() and url_form.is_valid():
+            file = file_form.save(commit=False)
             file.owner = owner
             file.created_at = now
             file.name = file.document.name
             file.storage_location = "local"
             file.origin = "internal"
             file.save()
-            url = DownloadUrl(expiry=tomorrow, created_at=now, owner=owner, file=file)
+            # allow for custom info
+            url = url_form.save(commit=False)
+            # url = DownloadUrl(expiry=tomorrow, created_at=now, owner=owner, file=file)
+            url.expiry = tomorrow
+            url.created_at = now
+            url.owner = owner
+            url.file = file
             url.save()
             return redirect("home")
     else:
-        form = FileForm()
-    return render(request, "disty/model_form_upload.html", {"form": form})
+        file_form = FileForm()
+        url_form = DownloadUrlForm()
+    return render(
+        request,
+        "disty/model_form_upload.html",
+        {"file_form": file_form, "url_form": url_form},
+    )
 
 
 def upload(request, ruuid):
@@ -144,6 +156,8 @@ def download(request, uuid):
     url = DownloadUrl.objects.get(url=uuid)
     if url.expiry < timezone.now():
         raise PermissionDenied
+    if not url.download_limit:
+        raise PermissionDenied
     file = File.objects.get(name=url.file.name)
     if all([file.origin == "external", str(request.user) == "AnonymousUser"]):
         raise PermissionDenied
@@ -162,7 +176,7 @@ def download(request, uuid):
             response["Content-Disposition"] = "inline; filename=" + os.path.basename(
                 url.file.document.path
             )
-            url.download_count += 1
+            url.download_limit -= 1
             url.save()
             return response
     raise Http404

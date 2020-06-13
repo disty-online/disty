@@ -29,7 +29,7 @@ class ModelsTestCase(TestCase):
 
         url = DownloadUrl.objects.create(
             expiry=tomorrow,
-            download_count=0,
+            download_limit=0,
             created_at=timezone.now(),
             owner=User.objects.get(pk=1),
             file=File.objects.get(pk=1),
@@ -55,7 +55,7 @@ class ModelsTestCase(TestCase):
     def test_url(self):
         tomorrow = timezone.now() + datetime.timedelta(days=1)
         my_url = DownloadUrl.objects.get(pk=1)
-        assert my_url.download_count == 0
+        assert my_url.download_limit == 0
         assert str(my_url.owner) == "admin_user"
         assert str(my_url.file) == "0001.sh"
         assert my_url.expiry == tomorrow

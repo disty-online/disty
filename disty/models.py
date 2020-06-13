@@ -38,7 +38,7 @@ class File(models.Model):
 
 class DownloadUrl(models.Model):
     expiry = models.DateTimeField("expiry at")
-    download_count = models.IntegerField(default=0)
+    download_limit = models.IntegerField(default=1)
     url = models.UUIDField(default=uuid.uuid4, editable=False)
     created_at = models.DateTimeField("created at")
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,)
