@@ -19,4 +19,14 @@
     </li>
     {% endfor %}
 </ul>
+
+<p>Links created by {{ user }}:</p>
+<ul>
+    {% for obj in upload_urls %}
+    <li>
+        <a href="{{ output_link }}{{ obj.url }}">{{ obj.description }}</a>
+        <small>(Created at: {{ obj.created_at }} -- Expiry by: {{ obj.expiry }})</small>
+    </li>
+    {% endfor %}
+</ul>
 {% endblock %}

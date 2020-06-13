@@ -22,7 +22,18 @@ def logout_view(request):
 def home(request):
     user = User.objects.get(username=request.user)
     urls = DownloadUrl.objects.filter(owner=user.id)
-    return render(request, "disty/home.html", {"urls": urls, "user": user})
+    upload_urls = UploadUrl.objects.filter(owner=user.id)
+    output_link = request.build_absolute_uri() + "upload/"
+    return render(
+        request,
+        "disty/home.html",
+        {
+            "urls": urls,
+            "user": user,
+            "upload_urls": upload_urls,
+            "output_link": output_link,
+        },
+    )
 
 
 @login_required
@@ -36,7 +47,10 @@ def new_url(request):
     if request.method == "POST":
         form = UploadUrlForm(request.POST)
         if form.is_valid():
-            url = UploadUrl(expiry=tomorrow, created_at=now, owner=user)
+            url = form.save(commit=False)
+            url.expiry = tomorrow
+            url.created_at = now
+            url.owner = user
             url.save()
             output_link = request.build_absolute_uri().replace(
                 "new_url/", f"upload/{str(url)}"
