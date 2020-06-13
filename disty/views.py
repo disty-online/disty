@@ -98,10 +98,7 @@ def model_form_upload(request):
             file.storage_location = "local"
             file.origin = "internal"
             file.save()
-            # allow for custom info
             url = url_form.save(commit=False)
-            # url = DownloadUrl(expiry=tomorrow, created_at=now, owner=owner, file=file)
-            url.expiry = tomorrow
             url.created_at = now
             url.owner = owner
             url.file = file

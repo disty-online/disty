@@ -14,7 +14,8 @@
     {% for obj in urls %}
     <li>
         <p>{{ obj.file.description }}</p><a href="download/{{ obj.url }}">{{ obj.file.name}} - {{ obj.owner }}</a>
-        <small>(Created at: {{ obj.created_at }}) - downloads remaining: {{ obj.download_limit }}</small>
+        <small>(Created at: {{ obj.created_at }}) - Downloads remaining: {{ obj.download_limit }} -- Expiry at
+            {{ obj.expiry }}</small>
     </li>
     {% endfor %}
 </ul>
