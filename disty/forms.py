@@ -1,5 +1,5 @@
 from django import forms
-from disty.models import File
+from disty.models import File, UploadUrl
 
 
 class FileForm(forms.ModelForm):
@@ -9,3 +9,9 @@ class FileForm(forms.ModelForm):
             "description",
             "document",
         )
+
+
+class UploadUrlForm(forms.ModelForm):
+    class Meta:
+        model = UploadUrl
+        fields = ("description",)

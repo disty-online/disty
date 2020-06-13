@@ -1,21 +1,22 @@
 {% extends 'base.html' %} {% block content %}
 <a href="logout/">Logout</a>
 <ul>
-  <li>
-    <a href="{% url 'model_form_upload' %}">Model Form Upload</a>
-  </li>
+    <li>
+        <a href="{% url 'model_form_upload' %}">Upload File</a>
+    </li>
+    <li>
+        <a href="{% url 'new_url' %}">Create upload link</a>
+    </li>
 </ul>
 
 <p>Uploaded files for {{ user }}:</p>
 <ul>
-  {% for obj in urls %}
-  <li>
-    <a href="download/{{ obj.url }}">{{ obj.file.name}} - {{ obj.owner }}</a>
-    <small
-      >(Created at: {{ obj.created_at }}) - accessed {{ obj.download_count }}
-      times</small
-    >
-  </li>
-  {% endfor %}
+    {% for obj in urls %}
+    <li>
+        <a href="download/{{ obj.url }}">{{ obj.file.name}} - {{ obj.owner }}</a>
+        <small>(Created at: {{ obj.created_at }}) - accessed {{ obj.download_count }}
+            times</small>
+    </li>
+    {% endfor %}
 </ul>
 {% endblock %}

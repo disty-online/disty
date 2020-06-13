@@ -1,0 +1,17 @@
+{% extends 'base.html' %} {% block content %}
+
+{% if not url %}
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Create</button>
+</form>
+{% endif %}
+
+<p>URL created by {{ user }}:</p>
+<p><a href="{{ path }}">{{ url }}</a></p>
+
+
+<p><a href="{% url 'home' %}">Return to home</a></p>
+
+{% endblock %}

@@ -6,7 +6,7 @@ from django.core.files.storage import FileSystemStorage
 from disty.models import File, DownloadUrl, Access, UploadUrl
 from django.http import HttpResponse, Http404
 from django.core.exceptions import PermissionDenied
-from disty.forms import FileForm
+from disty.forms import FileForm, UploadUrlForm
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
@@ -23,6 +23,32 @@ def home(request):
     user = User.objects.get(username=request.user)
     urls = DownloadUrl.objects.filter(owner=user.id)
     return render(request, "disty/home.html", {"urls": urls, "user": user})
+
+
+@login_required
+def new_url(request):
+    """
+        Creates a url for file upload from external users.
+    """
+    user = User.objects.get(username=request.user)
+    tomorrow = timezone.now() + datetime.timedelta(days=1)
+    now = timezone.now()
+    if request.method == "POST":
+        form = UploadUrlForm(request.POST)
+        if form.is_valid():
+            url = UploadUrl(expiry=tomorrow, created_at=now, owner=user)
+            url.save()
+            output_link = request.build_absolute_uri().replace(
+                "new_url/", f"upload/{str(url)}"
+            )
+            return render(
+                request,
+                "disty/new_url.html",
+                {"url": url, "user": user, "path": output_link},
+            )
+    else:
+        form = UploadUrlForm()
+    return render(request, "disty/new_url.html", {"form": form})
 
 
 @login_required
@@ -84,6 +110,7 @@ def upload(request, ruuid):
             file.owner = owner
             file.created_at = now
             file.name = file.document.name
+            file.storage_location = "local"
             file.origin = "external"
             file.save()
             url = DownloadUrl(expiry=tomorrow, created_at=now, owner=owner, file=file)
