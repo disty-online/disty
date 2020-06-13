@@ -1,6 +1,6 @@
 import datetime
 import os
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, HttpResponseRedirect
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
 from disty.models import File, DownloadUrl, Access
@@ -10,6 +10,12 @@ from disty.forms import FileForm
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.contrib.auth import logout
+
+
+def logout_view(request):
+    logout(request)
+    return HttpResponseRedirect("/disty/")
 
 
 @login_required
