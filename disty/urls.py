@@ -11,4 +11,5 @@ urlpatterns = [
     url(r"^download/(?P<uuid>.*)$", views.download, name="download"),
     url(r"^logout/", views.logout_view, name="logout"),
     url(r"^uploads/form/$", views.model_form_upload, name="model_form_upload"),
+    url(r"^upload/(?P<ruuid>.*)$", views.upload, name="upload"),
 ]

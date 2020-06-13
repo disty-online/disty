@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 # Register your models here.
-from .models import File, DownloadUrl, Access
+from .models import File, DownloadUrl, Access, UploadUrl
 
 admin.site.site_header = "Disty"
 
@@ -21,3 +21,4 @@ class UrlAdmin(admin.ModelAdmin):
 admin.site.register(File, FileAdmin)
 admin.site.register(DownloadUrl, UrlAdmin)
 admin.site.register(Access, AccessAdmin)
+admin.site.register(UploadUrl)

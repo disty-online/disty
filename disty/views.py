@@ -3,7 +3,7 @@ import os
 from django.shortcuts import render, redirect, HttpResponseRedirect
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
-from disty.models import File, DownloadUrl, Access
+from disty.models import File, DownloadUrl, Access, UploadUrl
 from django.http import HttpResponse, Http404
 from django.core.exceptions import PermissionDenied
 from disty.forms import FileForm
@@ -48,6 +48,32 @@ def model_form_upload(request):
             file.owner = owner
             file.created_at = now
             file.name = file.document.name
+            file.save()
+            url = DownloadUrl(expiry=tomorrow, created_at=now, owner=owner, file=file)
+            url.save()
+            return redirect("home")
+    else:
+        form = FileForm()
+    return render(request, "disty/model_form_upload.html", {"form": form})
+
+
+def upload(request, ruuid):
+    if not ruuid:
+        raise PermissionDenied
+    url = UploadUrl.objects.get(url=ruuid)
+    if url.expiry < timezone.now():
+        raise PermissionDenied
+    owner = url.owner
+    tomorrow = timezone.now() + datetime.timedelta(days=1)
+    now = timezone.now()
+    if request.method == "POST":
+        form = FileForm(request.POST, request.FILES)
+        if form.is_valid():
+            file = form.save(commit=False)
+            file.owner = owner
+            file.created_at = now
+            file.name = file.document.name
+            file.origin = "external"
             file.save()
             url = DownloadUrl(expiry=tomorrow, created_at=now, owner=owner, file=file)
             url.save()
