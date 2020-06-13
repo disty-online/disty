@@ -22,7 +22,6 @@ class File(models.Model):
         """
         super().save(*args, **kwargs)
         checksum = hashlib.sha1()
-        print(self.document.path)
         with open(self.document.path, "rb") as file:
             while True:
                 data = file.read(65536)
@@ -30,6 +29,7 @@ class File(models.Model):
                     break
                 checksum.update(data)
         self.checksum = checksum.hexdigest()
+        self.path = self.document.path
         super().save(*args, **kwargs)
 
     def __str__(self):

@@ -54,6 +54,8 @@ def model_form_upload(request):
             file.owner = owner
             file.created_at = now
             file.name = file.document.name
+            file.storage_location = "local"
+            file.origin = "internal"
             file.save()
             url = DownloadUrl(expiry=tomorrow, created_at=now, owner=owner, file=file)
             url.save()
