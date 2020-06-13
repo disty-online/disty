@@ -27,6 +27,9 @@ def home(request):
 
 @login_required
 def access(request):
+    """
+        Displays all access history on files for specific user.
+    """
     user = User.objects.get(username=request.user)
     urls = DownloadUrl.objects.filter(owner=user.id)
     ids = [url.id for url in urls]
@@ -38,6 +41,9 @@ def access(request):
 
 @login_required
 def model_form_upload(request):
+    """
+        Allows file upload for internal users.
+    """
     owner = request.user
     tomorrow = timezone.now() + datetime.timedelta(days=1)
     now = timezone.now()
@@ -58,6 +64,9 @@ def model_form_upload(request):
 
 
 def upload(request, ruuid):
+    """
+        Allows file upload for external users.
+    """
     if not ruuid:
         raise PermissionDenied
     url = UploadUrl.objects.get(url=ruuid)
@@ -84,21 +93,25 @@ def upload(request, ruuid):
 
 
 def download(request, uuid):
+    """
+        Download view for all public files.
+    """
     if not uuid:
         raise PermissionDenied
     url = DownloadUrl.objects.get(url=uuid)
     if url.expiry < timezone.now():
         raise PermissionDenied
-    file = url.file.name
+    file = File.objects.get(name=url.file.name)
+    if all([file.origin == "external", str(request.user) == "AnonymousUser"]):
+        raise PermissionDenied
     Access(
         source_ip=get_client_ip(request),
         user_agent=request.META.get("HTTP_USER_AGENT", ""),
         timestamp=timezone.now(),
-        file=File.objects.get(name=file),
+        file=File.objects.get(name=file.name),
         url=url,
         user=url.owner,
     ).save()
-
     if os.path.exists(url.file.document.path):
         with open(url.file.document.path, "rb") as fh:
             # TODO: Update content_type
