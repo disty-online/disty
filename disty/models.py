@@ -2,6 +2,9 @@ import hashlib
 import uuid
 from django.db import models
 from django.conf import settings
+from django.db.models.signals import post_delete
+from django.dispatch import receiver
+import os
 
 
 class File(models.Model):
@@ -32,6 +35,9 @@ class File(models.Model):
         self.path = self.document.path
         super().save(*args, **kwargs)
 
+    def delete(self):
+        super().delete(*args, **kwargs)
+
     def __str__(self):
         return str(self.name)
 
@@ -54,7 +60,7 @@ class UploadUrl(models.Model):
     url = models.UUIDField(default=uuid.uuid4, editable=False)
     created_at = models.DateTimeField("created at")
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,)
-    description = models.CharField(max_length=255, blank=True)
+    description = models.CharField(max_length=255)
 
     def __str__(self):
         return f"{self.url}"
@@ -70,3 +76,10 @@ class Access(models.Model):
 
     def __str__(self):
         return self.file.name
+
+
+@receiver(models.signals.post_delete, sender=File)
+def delete_file(sender, instance, *args, **kwargs):
+    """ Deletes physical files on `post_delete` """
+    if os.path.isfile(instance.document.path):
+        os.remove(instance.document.path)
