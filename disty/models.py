@@ -54,7 +54,7 @@ class UploadUrl(models.Model):
     url = models.UUIDField(default=uuid.uuid4, editable=False)
     created_at = models.DateTimeField("created at")
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,)
-    description = models.CharField(max_length=255, blank=True)
+    description = models.CharField(max_length=255)
 
     def __str__(self):
         return f"{self.url}"
