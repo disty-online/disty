@@ -1,35 +1,69 @@
 {% extends 'base.html' %} {% block content %}
-<a href="logout/">Logout</a>
-<a href="password_change/">Change my password</a>
-
-<ul>
-    <li>
-        <a href="{% url 'model_form_upload' %}">Upload File</a>
+<ul class="flex">
+    <li class="flex-1 mr-2">
+        <a class="text-center block border border-white rounded hover:border-gray-200 text-blue-500 hover:bg-gray-200 py-2 px-4"
+            href="{% url 'model_form_upload' %}">Upload File</a>
     </li>
-    <li>
-        <a href="{% url 'new_url' %}">Create upload link</a>
+    <li class="flex-1 mr-2">
+        <a class="text-center block border border-white rounded hover:border-gray-200 text-blue-500 hover:bg-gray-200 py-2 px-4"
+            href="{% url 'new_url' %}">Create upload link</a>
     </li>
-    <li><a href="{% url 'access' %}">File download history</a></li>
+    <li class="flex-1 mr-2">
+        <a class="text-center block border border-white rounded hover:border-gray-200 text-blue-500 hover:bg-gray-200 py-2 px-4"
+            href="{% url 'access' %}">File download history</a>
+    </li>
+    <li class="flex-1 mr-2">
+        <a class="text-center block border border-white rounded hover:border-gray-200 text-blue-500 hover:bg-gray-200 py-2 px-4"
+            href="password_change/">Change my password</a>
+    </li>
+    <li class="flex-1 mr-2">
+        <a class="text-center block border border-white rounded hover:border-gray-200 text-blue-500 hover:bg-gray-200 py-2 px-4"
+            href="logout/">Logout</a>
+    </li>
 </ul>
 
-<p>Uploaded files for {{ user }}:</p>
-<ul>
-    {% for obj in urls %}
-    <li>
-        <p>{{ obj.file.description }}</p><a href="download/{{ obj.url }}">{{ obj.file.name}} - {{ obj.owner }}</a>
-        <small>(Created at: {{ obj.created_at }}) - Downloads remaining: {{ obj.download_limit }} -- Expiry at
-            {{ obj.expiry }}</small>
-    </li>
-    {% endfor %}
-</ul>
 
-<p>Links created by {{ user }}:</p>
-<ul>
-    {% for obj in upload_urls %}
-    <li>
-        <a href="{{ output_link }}{{ obj.url }}">{{ obj.description }}</a>
-        <small>(Created at: {{ obj.created_at }} -- Expiry by: {{ obj.expiry }})</small>
-    </li>
-    {% endfor %}
-</ul>
+<p class="text-2xl pt-8">Uploaded files for {{ user }}:</p>
+<table class="table-auto">
+    <thead>
+        <tr class="bg-gray-300">
+            <th class="border px-4 py-2">Description</th>
+            <th class="border px-4 px-2">Name - Owner</th>
+            <th class="border px-4 px-2">Info</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for obj in urls %}
+        <tr>
+            <td class="border px-4 py-2">{{ obj.file.description }}</td>
+            <td class="border px-4 py-2"><a class="underline" href="download/{{ obj.url }}">{{ obj.file.name}} -
+                    {{ obj.owner }}</a></td>
+            <td class="border px-4 py-2">(Created at: {{ obj.created_at }}) - Downloads remaining:
+                {{ obj.download_limit }} -- Expiry
+                at
+                {{ obj.expiry }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<p class="text-2xl pt-8">Links created by {{ user }}:</p>
+<table class="table-auto">
+    <thead>
+        <tr class="bg-gray-300">
+            <th class="border px-4 py-2">URL</th>
+            <th class="border px-4 py-2">Info</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for obj in upload_urls %}
+        <tr>
+            <td class="border px-4 py-2"><a class="underline"
+                    href="{{ output_link }}{{ obj.url }}">{{ obj.description }}</a></td>
+            <td class="border px-4 py-2">(Created at: {{ obj.created_at }} -- Expiry by: {{ obj.expiry }})</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
 {% endblock %}
