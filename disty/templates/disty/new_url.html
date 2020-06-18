@@ -1,17 +1,26 @@
 {% extends 'base.html' %}
 {% block content %}
 {% include 'disty/navigation.html' %}
+{% load widget_tweaks %}
 
 {% if not url %}
-<form method="post" enctype="multipart/form-data">
+<form class="w-full max-w-sm pl-8 pt-4" method="post" enctype="multipart/form-data">
     {% csrf_token %}
-    {{ form.as_p }}
-    <!-- <button class="bg-blue-500" type=" submit">Create</button> -->
-    <button type=" submit">Create</button>
+    <div class="fieldWrapper flex justify-end border-b border-b-2 border-teal-500 py-2">
+        {{ form.description.errors }}
+        {% render_field form.description style="appearance-none bg-transparent border-none w-full text-gray-700 mr-3 py-1 px-2 leading-tight focus:outline-none" placeholder="short url description"%}
+        <button
+            class="flex-shrink-0 bg-teal-500 hover:bg-teal-700 border-teal-500 hover:border-teal-700 text-sm border-4 text-white py-1 px-2 rounded"
+            type="submit">
+            Create
+        </button>
+    </div>
+    </div>
 </form>
 {% endif %}
-
-<p>URL created by {{ user }}:</p>
-<p><a href="{{ path }}">{{ url }}</a></p>
+<div class="pl-8 pt-3">
+    <p class="text-2xl pt-8">URL created by {{ user }}:</p>
+    <p><a class="underline" href="{{ path }}">{{ url }}</a></p>
+</div>
 
 {% endblock %}
