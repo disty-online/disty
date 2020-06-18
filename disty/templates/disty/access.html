@@ -1,4 +1,6 @@
-{% extends 'base.html' %} {% block content %}
+{% extends 'base.html' %}
+{% block content %}
+{% include 'disty/navigation.html' %}
 
 <p>Downloaded files uploaded by {{ user }}:</p>
 <ul>
@@ -9,7 +11,5 @@
   </li>
   {% endfor %}
 </ul>
-
-<p><a href="{% url 'home' %}">Return to home</a></p>
 
 {% endblock %}

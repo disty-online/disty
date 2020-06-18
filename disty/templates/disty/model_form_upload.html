@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
-
 {% block content %}
+{% include 'disty/navigation.html' %}
+
 <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
     {{ file_form.as_p }}
@@ -8,5 +9,4 @@
     <button type="submit">Upload</button>
 </form>
 
-<p><a href="{% url 'home' %}">Return to home</a></p>
 {% endblock %}

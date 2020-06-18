@@ -1,4 +1,6 @@
-{% extends 'base.html' %} {% block content %}
+{% extends 'base.html' %}
+{% block content %}
+{% include 'disty/navigation.html' %}
 
 {% if not url %}
 <form method="post" enctype="multipart/form-data">
@@ -11,8 +13,5 @@
 
 <p>URL created by {{ user }}:</p>
 <p><a href="{{ path }}">{{ url }}</a></p>
-
-
-<p><a href="{% url 'home' %}">Return to home</a></p>
 
 {% endblock %}
