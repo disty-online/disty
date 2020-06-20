@@ -183,7 +183,7 @@ def upload(request, ruuid):
             return redirect("home")
     else:
         form = FileForm()
-    return render(request, "disty/model_form_upload.html", {"form": form})
+    return render(request, "disty/model_form_upload.html", {"file_form": form})
 
 
 def download(request, uuid):
