@@ -101,7 +101,7 @@ def access(request):
     """
     user = User.objects.get(username=request.user)
     urls = DownloadUrl.objects.filter(owner=user.id)
-    ids = [url.id for url in urls]
+    ids = [url.id for url in urls if url.file.origin == "internal"]
     accesses = Access.objects.filter(url__in=ids)
     return render(
         request, "disty/access.html", {"urls": urls, "user": user, "accesses": accesses}
