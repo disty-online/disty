@@ -38,7 +38,8 @@
         <tr>
             <td class="border px-4 py-2"><a class="underline"
                     href="{{ output_link }}{{ obj.url }}">{{ obj.description }}</a></td>
-            <td class="border px-4 py-2">(Created at: {{ obj.created_at }} -- Expiry by: {{ obj.expiry }})</td>
+            <td class="border px-4 py-2">(Created at: {{ obj.created_at }} -- Expiry by: {{ obj.expiry }}) 
+                (<a class="underline" href="edit_upload_url/form/{{ obj.url }}">edit</a>)</td>
         </tr>
         {% endfor %}
     </tbody>

@@ -6,7 +6,13 @@ from django.core.files.storage import FileSystemStorage
 from disty.models import File, DownloadUrl, Access, UploadUrl
 from django.http import HttpResponse, Http404
 from django.core.exceptions import PermissionDenied
-from disty.forms import FileForm, UploadUrlForm, DownloadUrlForm, EditDownloadUrlForm
+from disty.forms import (
+    FileForm,
+    UploadUrlForm,
+    DownloadUrlForm,
+    EditDownloadUrlForm,
+    EditUploadUrlForm,
+)
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
@@ -57,6 +63,31 @@ def new_url(request):
     else:
         form = UploadUrlForm()
     return render(request, "disty/new_url.html", {"form": form})
+
+
+@login_required
+def edit_upload_url(request, url):
+    """
+        Allows existing URLs to be edited.
+    """
+    my_url = get_object_or_404(UploadUrl, url=url)
+    user = User.objects.get(username=request.user)
+    if request.method == "POST":
+        url_form = EditUploadUrlForm(request.POST, instance=my_url)
+        if url_form.is_valid():
+            url = url_form.save(commit=True)
+            output_link = request.build_absolute_uri().replace(
+                f"edit_upload_url/form/{str(url)}", f"upload/{str(url)}"
+            )
+            return render(
+                request,
+                "disty/new_url.html",
+                {"url": url, "user": user, "path": output_link},
+            )
+    else:
+        test_url = UploadUrl.objects.get(url=url)
+        url_form = EditUploadUrlForm(instance=test_url)
+    return render(request, "disty/new_url.html", {"form": url_form},)
 
 
 @login_required

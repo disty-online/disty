@@ -16,6 +16,11 @@ urlpatterns = [
     url(r"^access/", views.access, name="access"),
     url(r"^download/(?P<uuid>.*)$", views.download, name="download"),
     url(r"^edit_upload/form/(?P<url>.*)$", views.edit_upload, name="edit_upload"),
+    url(
+        r"^edit_upload_url/form/(?P<url>.*)$",
+        views.edit_upload_url,
+        name="edit_upload_url",
+    ),
     path("logout/", LogoutView.as_view(), name="logout"),
     url(r"^new_url/", views.new_url, name="new_url"),
     path("password_change/", PasswordChangeView.as_view(success_url="/disty")),

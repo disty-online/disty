@@ -35,4 +35,15 @@ class EditDownloadUrlForm(forms.ModelForm):
 class UploadUrlForm(forms.ModelForm):
     class Meta:
         model = UploadUrl
-        fields = ("description",)
+        fields = ("description", "expiry")
+
+
+class EditUploadUrlForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(EditUploadUrlForm, self).__init__(*args, **kwargs)
+        instance = kwargs["instance"]
+        self.fields["expiry"].initial = instance.expiry
+
+    class Meta:
+        model = UploadUrl
+        fields = ("expiry",)
