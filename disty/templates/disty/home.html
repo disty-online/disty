@@ -34,19 +34,17 @@
             <th class="border px-4 py-2">Description</th>
             <th class="border px-4 px-2">Name</th>
             <th class="border px-4 px-2">Created at</th>
-            <th class="border px-4 px-2">Expiry by</th>
-            <th class="border px-4 px-2">Downloads remaining</th>
+            <th class="border px-4 px-2">Uploaded from</th>
         </tr>
     </thead>
     <tbody>
         {% for url in urls %}
-        {% if url.file.origin == "external" %}
+        {% if url.file.origin != "internal" %}
         <tr>
             <td class="border px-4 py-2">{{ url.file.description }}</td>
             <td class="border px-4 py-2"><a class="underline" href="download/{{ url.url }}">{{ url.file.name}}</a></td>
             <td class="border px-4 py-2">{{ url.created_at }}</td>
-            <td class="border px-4 py-2">{{ url.expiry }} (<a class="underline" href="edit_upload/form/{{ url.url }}">edit</a>)</td>
-            <td class="border px-4 py-2">{{ url.download_limit }} (<a class="underline" href="edit_upload/form/{{ url.url }}">edit</a>)</td>
+            <td class="border px-4 py-2">{{ url.file.origin }}</td>
         </tr>
         {% endif %}
         {% endfor %}
