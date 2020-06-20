@@ -18,6 +18,12 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 
 
+def tomorrow_and_now():
+    tomorrow = timezone.now() + datetime.timedelta(days=1)
+    now = timezone.now()
+    return tomorrow, now
+
+
 @login_required
 def home(request):
     user = User.objects.get(username=request.user)
@@ -42,8 +48,7 @@ def new_url(request):
         Creates a url for file upload from external users.
     """
     user = User.objects.get(username=request.user)
-    tomorrow = timezone.now() + datetime.timedelta(days=1)
-    now = timezone.now()
+    tomorrow, now = tomorrow_and_now()
     if request.method == "POST":
         form = UploadUrlForm(request.POST)
         if form.is_valid():
@@ -117,8 +122,7 @@ def model_form_upload(request):
         Allows file upload for internal users.
     """
     owner = request.user
-    tomorrow = timezone.now() + datetime.timedelta(days=1)
-    now = timezone.now()
+    tomorrow, now = tomorrow_and_now()
     if request.method == "POST":
         file_form = FileForm(request.POST, request.FILES)
         url_form = DownloadUrlForm(request.POST)
@@ -173,8 +177,7 @@ def upload(request, ruuid):
     if url.expiry < timezone.now():
         raise PermissionDenied
     owner = url.owner
-    tomorrow = timezone.now() + datetime.timedelta(days=1)
-    now = timezone.now()
+    tomorrow, now = tomorrow_and_now()
     if request.method == "POST":
         form = FileForm(request.POST, request.FILES)
         if form.is_valid():
