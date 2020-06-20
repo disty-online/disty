@@ -4,6 +4,7 @@ from django.db import models
 from django.conf import settings
 from django.db.models.signals import post_delete
 from django.dispatch import receiver
+from disty.settings import DEFAULT_DOWNLOAD_LIMIT
 import os
 
 
@@ -44,7 +45,7 @@ class File(models.Model):
 
 class DownloadUrl(models.Model):
     expiry = models.DateTimeField("expiry at")
-    download_limit = models.IntegerField(default=1)
+    download_limit = models.IntegerField(default=DEFAULT_DOWNLOAD_LIMIT)
     url = models.UUIDField(default=uuid.uuid4, editable=False)
     created_at = models.DateTimeField("created at")
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,)

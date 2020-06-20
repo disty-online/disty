@@ -18,12 +18,6 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 
 
-def tomorrow_and_now():
-    tomorrow = timezone.now() + datetime.timedelta(days=1)
-    now = timezone.now()
-    return tomorrow, now
-
-
 @login_required
 def home(request):
     user = User.objects.get(username=request.user)
@@ -48,13 +42,11 @@ def new_url(request):
         Creates a url for file upload from external users.
     """
     user = User.objects.get(username=request.user)
-    tomorrow, now = tomorrow_and_now()
     if request.method == "POST":
         form = UploadUrlForm(request.POST)
         if form.is_valid():
             url = form.save(commit=False)
-            url.expiry = tomorrow
-            url.created_at = now
+            url.created_at = timezone.now()
             url.owner = user
             if url.description == "internal":
                 # TODO: Add proper handling
@@ -122,7 +114,7 @@ def model_form_upload(request):
         Allows file upload for internal users.
     """
     owner = request.user
-    tomorrow, now = tomorrow_and_now()
+    now = timezone.now()
     if request.method == "POST":
         file_form = FileForm(request.POST, request.FILES)
         url_form = DownloadUrlForm(request.POST)
@@ -173,11 +165,11 @@ def upload(request, ruuid):
     """
     if not ruuid:
         raise PermissionDenied
+    now = timezone.now()
     url = UploadUrl.objects.get(url=ruuid)
-    if url.expiry < timezone.now():
+    if url.expiry < now:
         raise PermissionDenied
     owner = url.owner
-    tomorrow, now = tomorrow_and_now()
     if request.method == "POST":
         form = FileForm(request.POST, request.FILES)
         if form.is_valid():
@@ -188,7 +180,7 @@ def upload(request, ruuid):
             file.storage_location = "local"
             file.origin = url.description
             file.save()
-            url = DownloadUrl(expiry=tomorrow, created_at=now, owner=owner, file=file)
+            url = DownloadUrl(created_at=now, owner=owner, file=file)
             url.save()
             return redirect("home")
     else:
