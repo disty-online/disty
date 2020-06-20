@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
 {% include 'disty/navigation.html' %}
-<p class="text-2xl pt-8">Uploaded files for {{ user }}:</p>
+<p class="text-2xl pt-8">Files uploaded by {{ user }}:</p>
 <table class="table-auto">
     <thead>
         <tr class="bg-gray-400">
@@ -14,6 +14,7 @@
     </thead>
     <tbody>
         {% for url in urls %}
+        {% if url.file.origin == "internal" %}
         <tr>
             <td class="border px-4 py-2">{{ url.file.description }}</td>
             <td class="border px-4 py-2"><a class="underline" href="download/{{ url.url }}">{{ url.file.name}}</a></td>
@@ -21,6 +22,33 @@
             <td class="border px-4 py-2">{{ url.expiry }} (<a class="underline" href="edit_upload/form/{{ url.url }}">edit</a>)</td>
             <td class="border px-4 py-2">{{ url.download_limit }} (<a class="underline" href="edit_upload/form/{{ url.url }}">edit</a>)</td>
         </tr>
+        {% endif %}
+        {% endfor %}
+    </tbody>
+</table>
+
+<p class="text-2xl pt-8">Files externally uploaded for {{ user }}:</p>
+<table class="table-auto">
+    <thead>
+        <tr class="bg-gray-400">
+            <th class="border px-4 py-2">Description</th>
+            <th class="border px-4 px-2">Name</th>
+            <th class="border px-4 px-2">Created at</th>
+            <th class="border px-4 px-2">Expiry by</th>
+            <th class="border px-4 px-2">Downloads remaining</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for url in urls %}
+        {% if url.file.origin == "external" %}
+        <tr>
+            <td class="border px-4 py-2">{{ url.file.description }}</td>
+            <td class="border px-4 py-2"><a class="underline" href="download/{{ url.url }}">{{ url.file.name}}</a></td>
+            <td class="border px-4 py-2">{{ url.created_at }}</td>
+            <td class="border px-4 py-2">{{ url.expiry }} (<a class="underline" href="edit_upload/form/{{ url.url }}">edit</a>)</td>
+            <td class="border px-4 py-2">{{ url.download_limit }} (<a class="underline" href="edit_upload/form/{{ url.url }}">edit</a>)</td>
+        </tr>
+        {% endif %}
         {% endfor %}
     </tbody>
 </table>
