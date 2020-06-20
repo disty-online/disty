@@ -6,20 +6,20 @@
     <thead>
         <tr class="bg-gray-400">
             <th class="border px-4 py-2">Description</th>
-            <th class="border px-4 px-2">Name - Owner</th>
-            <th class="border px-4 px-2">Info</th>
+            <th class="border px-4 px-2">Name</th>
+            <th class="border px-4 px-2">Created at</th>
+            <th class="border px-4 px-2">Expiry by</th>
+            <th class="border px-4 px-2">Downlods remaining</th>
         </tr>
     </thead>
     <tbody>
         {% for url in urls %}
         <tr>
             <td class="border px-4 py-2">{{ url.file.description }}</td>
-            <td class="border px-4 py-2"><a class="underline" href="download/{{ url.url }}">{{ url.file.name}} -
-                    {{ url.owner }}</a></td>
-            <td class="border px-4 py-2">(Created at: {{ url.created_at }}) - Downloads remaining:
-                {{ url.download_limit }} -- Expiry
-                at
-                {{ url.expiry }} (<a class="underline" href="edit_upload/form/{{ url.url }}">edit</a>)</td>
+            <td class="border px-4 py-2"><a class="underline" href="download/{{ url.url }}">{{ url.file.name}}</a></td>
+            <td class="border px-4 py-2">{{ url.created_at }}</td>
+            <td class="border px-4 py-2">{{ url.expiry }} (<a class="underline" href="edit_upload/form/{{ url.url }}">edit</a>)</td>
+            <td class="border px-4 py-2">{{ url.download_limit }} (<a class="underline" href="edit_upload/form/{{ url.url }}">edit</a>)</td>
         </tr>
         {% endfor %}
     </tbody>
@@ -29,17 +29,17 @@
 <table class="table-auto">
     <thead>
         <tr class="bg-gray-400">
-            <th class="border px-4 py-2">URL</th>
-            <th class="border px-4 py-2">Info</th>
+            <th class="border px-4 py-2">Description</th>
+            <th class="border px-4 py-2">Created at</th>
+            <th class="border px-4 py-2">Expiry by</th>
         </tr>
     </thead>
     <tbody>
         {% for obj in upload_urls %}
         <tr>
-            <td class="border px-4 py-2"><a class="underline"
-                    href="{{ output_link }}{{ obj.url }}">{{ obj.description }}</a></td>
-            <td class="border px-4 py-2">(Created at: {{ obj.created_at }} -- Expiry by: {{ obj.expiry }}) 
-                (<a class="underline" href="edit_upload_url/form/{{ obj.url }}">edit</a>)</td>
+            <td class="border px-4 py-2"><a class="underline" href="{{ output_link }}{{ obj.url }}">{{ obj.description }}</a></td>
+            <td class="border px-4 py-2">{{ obj.created_at }}</td>
+            <td class="border px-4 py-2">{{ obj.expiry }}(<a class="underline" href="edit_upload_url/form/{{ obj.url }}">edit</a>)</td>
         </tr>
         {% endfor %}
     </tbody>
