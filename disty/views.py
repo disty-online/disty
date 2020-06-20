@@ -193,12 +193,13 @@ def download(request, uuid):
     if not uuid:
         raise PermissionDenied
     url = DownloadUrl.objects.get(url=uuid)
-    if url.expiry < timezone.now():
+    user = request.user
+    if url.owner != user and url.expiry < timezone.now():
         raise PermissionDenied
     if not url.download_limit:
         raise PermissionDenied
     file = File.objects.get(name=url.file.name)
-    if all([file.origin == "external", str(request.user) == "AnonymousUser"]):
+    if all([file.origin == "external", str(user) == "AnonymousUser"]):
         raise PermissionDenied
     Access(
         source_ip=get_client_ip(request),
@@ -210,12 +211,12 @@ def download(request, uuid):
     ).save()
     if os.path.exists(url.file.document.path):
         with open(url.file.document.path, "rb") as fh:
-            # TODO: Update content_type
             response = HttpResponse(fh.read(), content_type="application/octet-stream")
             response["Content-Disposition"] = "inline; filename=" + os.path.basename(
                 url.file.document.path
             )
-            url.download_limit -= 1
+            if url.owner != user:
+                url.download_limit -= 1
             url.save()
             return response
     raise Http404
