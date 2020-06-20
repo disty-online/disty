@@ -46,4 +46,7 @@ class EditUploadUrlForm(forms.ModelForm):
 
     class Meta:
         model = UploadUrl
-        fields = ("expiry",)
+        fields = (
+            "description",
+            "expiry",
+        )
