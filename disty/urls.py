@@ -15,6 +15,7 @@ urlpatterns = [
     url(r"^$", views.home, name="home"),
     url(r"^access/", views.access, name="access"),
     url(r"^download/(?P<uuid>.*)$", views.download, name="download"),
+    url(r"^edit_upload/form/(?P<url>.*)$", views.edit_upload, name="edit_upload"),
     path("logout/", LogoutView.as_view(), name="logout"),
     url(r"^uploads/form/$", views.model_form_upload, name="model_form_upload"),
     url(r"^upload/(?P<ruuid>.*)$", views.upload, name="upload"),

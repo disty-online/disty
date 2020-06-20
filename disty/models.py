@@ -51,8 +51,7 @@ class DownloadUrl(models.Model):
     file = models.ForeignKey(File, on_delete=models.CASCADE)
 
     def __str__(self):
-        base_url = "http://localhost/file/"
-        return f"{base_url}{self.url}"
+        return f"{self.url}"
 
 
 class UploadUrl(models.Model):

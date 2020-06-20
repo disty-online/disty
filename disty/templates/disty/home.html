@@ -11,15 +11,15 @@
         </tr>
     </thead>
     <tbody>
-        {% for obj in urls %}
+        {% for url in urls %}
         <tr>
-            <td class="border px-4 py-2">{{ obj.file.description }}</td>
-            <td class="border px-4 py-2"><a class="underline" href="download/{{ obj.url }}">{{ obj.file.name}} -
-                    {{ obj.owner }}</a></td>
-            <td class="border px-4 py-2">(Created at: {{ obj.created_at }}) - Downloads remaining:
-                {{ obj.download_limit }} -- Expiry
+            <td class="border px-4 py-2">{{ url.file.description }}</td>
+            <td class="border px-4 py-2"><a class="underline" href="download/{{ url.url }}">{{ url.file.name}} -
+                    {{ url.owner }}</a></td>
+            <td class="border px-4 py-2">(Created at: {{ url.created_at }}) - Downloads remaining:
+                {{ url.download_limit }} -- Expiry
                 at
-                {{ obj.expiry }}</td>
+                {{ url.expiry }} (<a class="underline" href="edit_upload/form/{{ url.url }}">edit</a>)</td>
         </tr>
         {% endfor %}
     </tbody>

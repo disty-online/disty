@@ -1,12 +1,12 @@
 import datetime
 import os
-from django.shortcuts import render, redirect, HttpResponseRedirect
+from django.shortcuts import render, redirect, HttpResponseRedirect, get_object_or_404
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
 from disty.models import File, DownloadUrl, Access, UploadUrl
 from django.http import HttpResponse, Http404
 from django.core.exceptions import PermissionDenied
-from disty.forms import FileForm, UploadUrlForm, DownloadUrlForm
+from disty.forms import FileForm, UploadUrlForm, DownloadUrlForm, EditDownloadUrlForm
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
@@ -106,6 +106,23 @@ def model_form_upload(request):
         "disty/model_form_upload.html",
         {"file_form": file_form, "url_form": url_form},
     )
+
+
+@login_required
+def edit_upload(request, url):
+    """
+        Allows existing URLs to be edited.
+    """
+    my_url = get_object_or_404(DownloadUrl, url=url)
+    if request.method == "POST":
+        url_form = EditDownloadUrlForm(request.POST, instance=my_url)
+        if url_form.is_valid():
+            url = url_form.save(commit=True)
+            return redirect("home")
+    else:
+        test_url = DownloadUrl.objects.get(url=url)
+        url_form = EditDownloadUrlForm(instance=test_url)
+    return render(request, "disty/model_form_upload.html", {"url_form": url_form},)
 
 
 def upload(request, ruuid):
