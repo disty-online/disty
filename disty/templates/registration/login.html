@@ -1,7 +1,7 @@
 {% extends "base.html" %} {% block content %}
 {% load widget_tweaks %}
 
-<div class="w-full max-w-lg ml-64">
+<div class="w-full max-w-lg ml-64 p-16">
   {% if form.errors %}
   <p>Your username and password didn't match. Please try again.</p>
   {% endif %} {% if next %} {% if user.is_authenticated %}
@@ -19,7 +19,7 @@
       <label class="block text-gray-700 text-sm font-bold mb-2" for="username">
         {{ form.username.label_tag }}
       </label>
-      {% render_field form.username class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" name="{{ form.username.name }}" id="id_{{ form.username.name }}" placeholder="Username"%}
+      {% render_field form.username class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" name="{{ form.username.name }}" id="id_{{ form.username.name }}" placeholder="Username" %}
     </div>
     <div class="mb-6">
       <label class="block text-gray-700 text-sm font-bold mb-2" for="password">
