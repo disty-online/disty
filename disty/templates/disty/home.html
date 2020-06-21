@@ -1,49 +1,54 @@
 {% extends 'base.html' %}
 {% block content %}
 {% include 'disty/navigation.html' %}
-<p class="text-2xl pt-8">Files uploaded by {{ user }}:</p>
+<p class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2 pt-8">Files uploaded by {{ user }}:</p>
 <table class="table-auto">
     <thead>
         <tr class="bg-gray-400">
-            <th class="border px-4 py-2">Description</th>
-            <th class="border px-4 px-2">Name</th>
-            <th class="border px-4 px-2">Created at</th>
-            <th class="border px-4 px-2">Expiry by</th>
-            <th class="border px-4 px-2">Downloads remaining</th>
+            <th class="border px-4 py-2 tracking-wide text-sm font-bold">Description</th>
+            <th class="border px-4 py-2 tracking-wide text-sm font-bold">Name</th>
+            <th class="border px-4 py-2 tracking-wide text-sm font-bold">Created at</th>
+            <th class="border px-4 py-2 tracking-wide text-sm font-bold">Expiry by</th>
+            <th class="border px-4 py-2 tracking-wide text-sm font-bold">Downloads remaining</th>
         </tr>
     </thead>
     <tbody>
         {% for url in urls %}
         {% if url.file.origin == "internal" %}
         <tr>
-            <td class="border px-4 py-2">{{ url.file.description }}</td>
-            <td class="border px-4 py-2"><a class="underline" href="download/{{ url.url }}">{{ url.file.name}}</a></td>
-            <td class="border px-4 py-2">{{ url.created_at }}</td>
-            <td class="border px-4 py-2">{{ url.expiry }} (<a class="underline" href="edit_upload/form/{{ url.url }}">edit</a>)</td>
-            <td class="border px-4 py-2">{{ url.download_limit }} (<a class="underline" href="edit_upload/form/{{ url.url }}">edit</a>)</td>
+            <td class="border px-4 py-2 tracking-wide text-sm">{{ url.file.description }}</td>
+            <td class="border px-4 py-2 tracking-wide text-sm"><a class="underline"
+                    href="download/{{ url.url }}">{{ url.file.name}}</a></td>
+            <td class="border px-4 py-2 tracking-wide text-sm">{{ url.created_at }}</td>
+            <td class="border px-4 py-2 tracking-wide text-sm">{{ url.expiry }} (<a class="underline"
+                    href="edit_upload/form/{{ url.url }}">edit</a>)</td>
+            <td class="border px-4 py-2 tracking-wide text-sm">{{ url.download_limit }} (<a class="underline"
+                    href="edit_upload/form/{{ url.url }}">edit</a>)</td>
         </tr>
         {% endif %}
         {% endfor %}
     </tbody>
 </table>
 
-<p class="text-2xl pt-8">Files externally uploaded for {{ user }}:</p>
+<p class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2 pt-10">Files externally uploaded for
+    {{ user }}:</p>
 <table class="table-auto">
     <thead>
         <tr class="bg-gray-400">
-            <th class="border px-4 py-2">Description</th>
-            <th class="border px-4 px-2">Name</th>
-            <th class="border px-4 px-2">Created at</th>
-            <th class="border px-4 px-2">Uploaded from</th>
+            <th class="border px-4 py-2 tracking-wide text-sm font-bold">Description</th>
+            <th class="border px-4 py-2 tracking-wide text-sm font-bold">Name</th>
+            <th class="border px-4 py-2 tracking-wide text-sm font-bold">Created at</th>
+            <th class="border px-4 py-2 tracking-wide text-sm font-bold">Uploaded from</th>
         </tr>
     </thead>
     <tbody>
         {% for url in urls %}
         {% if url.file.origin != "internal" %}
         <tr>
-            <td class="border px-4 py-2">{{ url.file.description }}</td>
-            <td class="border px-4 py-2"><a class="underline" href="download/{{ url.url }}">{{ url.file.name}}</a></td>
-            <td class="border px-4 py-2">{{ url.created_at }}</td>
+            <td class="border px-4 py-2 tracking-wide text-sm">{{ url.file.description }}</td>
+            <td class="border px-4 py-2 tracking-wide text-sm"><a class="underline"
+                    href="download/{{ url.url }}">{{ url.file.name}}</a></td>
+            <td class="border px-4 py-2 tracking-wide text-sm">{{ url.created_at }}</td>
             <td class="border px-4 py-2">{{ url.file.origin }}</td>
         </tr>
         {% endif %}
@@ -51,21 +56,23 @@
     </tbody>
 </table>
 
-<p class="text-2xl pt-8">Links created by {{ user }}:</p>
+<p class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2 pt-10">Links created by {{ user }}:</p>
 <table class="table-auto">
     <thead>
         <tr class="bg-gray-400">
-            <th class="border px-4 py-2">Description</th>
-            <th class="border px-4 py-2">Created at</th>
-            <th class="border px-4 py-2">Expiry by</th>
+            <th class="border px-4 py-2 tracking-wide text-sm font-bold">Description</th>
+            <th class="border px-4 py-2 tracking-wide text-sm font-bold">Created at</th>
+            <th class="border px-4 py-2 tracking-wide text-sm font-bold">Expiry by</th>
         </tr>
     </thead>
     <tbody>
         {% for obj in upload_urls %}
         <tr>
-            <td class="border px-4 py-2"><a class="underline" href="{{ output_link }}{{ obj.url }}">{{ obj.description }}</a></td>
-            <td class="border px-4 py-2">{{ obj.created_at }}</td>
-            <td class="border px-4 py-2">{{ obj.expiry }}(<a class="underline" href="edit_upload_url/form/{{ obj.url }}">edit</a>)</td>
+            <td class="border px-4 py-2 tracking-wide text-sm"><a class="underline"
+                    href="{{ output_link }}{{ obj.url }}">{{ obj.description }}</a></td>
+            <td class="border px-4 py-2 tracking-wide text-sm">{{ obj.created_at }}</td>
+            <td class="border px-4 py-2 tracking-wide text-sm">{{ obj.expiry }}(<a class="underline"
+                    href="edit_upload_url/form/{{ obj.url }}">edit</a>)</td>
         </tr>
         {% endfor %}
     </tbody>

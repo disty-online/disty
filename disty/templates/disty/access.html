@@ -2,23 +2,24 @@
 {% block content %}
 {% include 'disty/navigation.html' %}
 
-<p class="text-2xl pt-8">Downloaded files from links created by {{ user }}:</p>
+<p class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2 pt-8">Downloaded files from links created
+  by {{ user }}:</p>
 <table class="table-auto">
   <thead>
     <tr class="bg-gray-400">
-      <th class="border px-4 py-2">Date</th>
-      <th class="border px-4 py-2">From IP</th>
-      <th class="border px-4 py-2">File URL</th>
-      <th class="border px-4 py-2">file name</th>
+      <th class="border px-4 py-2 tracking-wide text-sm font-bold">Date</th>
+      <th class="border px-4 py-2 tracking-wide text-sm font-bold">From IP</th>
+      <th class="border px-4 py-2 tracking-wide text-sm font-bold">File URL</th>
+      <th class="border px-4 py-2 tracking-wide text-sm font-bold">file name</th>
     </tr>
   </thead>
   <tbody>
     {% for access in accesses %}
     <tr>
-      <td class="border px-4 py-2">{{ access.timestamp }}</td>
-      <td class="border px-4 py-2">{{ access.source_ip }}</td>
-      <td class="border px-4 py-2">{{ access.url }}</td>
-      <td class="border px-4 py-2">{{access.file }}</td>
+      <td class="border px-4 py-2 tracking-wide text-sm">{{ access.timestamp }}</td>
+      <td class="border px-4 py-2 tracking-wide text-sm">{{ access.source_ip }}</td>
+      <td class="border px-4 py-2 tracking-wide text-sm">{{ access.url }}</td>
+      <td class="border px-4 py-2 tracking-wide text-sm">{{access.file }}</td>
     </tr>
     {% endfor %}
   </tbody>
