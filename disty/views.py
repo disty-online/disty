@@ -89,8 +89,8 @@ def edit_upload_url(request, url):
                 {"url": url, "user": user, "path": output_link},
             )
     else:
-        test_url = UploadUrl.objects.get(url=url)
-        url_form = EditUploadUrlForm(instance=test_url)
+        upload_url = UploadUrl.objects.get(url=url)
+        url_form = EditUploadUrlForm(instance=upload_url)
     return render(request, "disty/new_url.html", {"form": url_form},)
 
 
@@ -154,8 +154,8 @@ def edit_upload(request, url):
             url = url_form.save(commit=True)
             return redirect("home")
     else:
-        test_url = DownloadUrl.objects.get(url=url)
-        url_form = EditDownloadUrlForm(instance=test_url)
+        download_url = DownloadUrl.objects.get(url=url)
+        url_form = EditDownloadUrlForm(instance=download_url)
     return render(request, "disty/model_form_upload.html", {"url_form": url_form},)
 
 
