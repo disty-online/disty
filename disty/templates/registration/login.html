@@ -1,31 +1,46 @@
-{% extends "base.html" %} {% block content %} {% if form.errors %}
-<p>Your username and password didn't match. Please try again.</p>
-{% endif %} {% if next %} {% if user.is_authenticated %}
-<p>
-  Your account doesn't have access to this page. To proceed, please login with
-  an account that has access.
-</p>
-{% else %}
-<p>Please login to see this page.</p>
-{% endif %} {% endif %}
+{% extends "base.html" %} {% block content %}
+{% load widget_tweaks %}
 
-<form method="post" action="{% url 'login' %}">
-  {% csrf_token %}
-  <table>
-    <tr>
-      <td>{{ form.username.label_tag }}</td>
-      <td>{{ form.username }}</td>
-    </tr>
-    <tr>
-      <td>{{ form.password.label_tag }}</td>
-      <td>{{ form.password }}</td>
-    </tr>
-  </table>
-  <input type="submit" value="login" />
-  <input type="hidden" name="next" value="{{ next }}" />
-</form>
+<div class="w-full max-w-lg ml-64">
+  {% if form.errors %}
+  <p>Your username and password didn't match. Please try again.</p>
+  {% endif %} {% if next %} {% if user.is_authenticated %}
+  <p>
+    Your account doesn't have access to this page. To proceed, please login with
+    an account that has access.
+  </p>
+  {% else %}
+  <p>Please login to see this page.</p>
+  {% endif %} {% endif %}
 
-{# Assumes you setup the password_reset view in your URLconf #}
-<p><a href="{% url 'password_reset' %}">Lost password?</a></p>
+  <form class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4" method="post" action="{% url 'login' %}">
+    {% csrf_token %}
+    <div class="mb-4">
+      <label class="block text-gray-700 text-sm font-bold mb-2" for="username">
+        {{ form.username.label_tag }}
+      </label>
+      {% render_field form.username class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" name="{{ form.username.name }}" id="id_{{ form.username.name }}" placeholder="Username"%}
+    </div>
+    <div class="mb-6">
+      <label class="block text-gray-700 text-sm font-bold mb-2" for="password">
+        {{ form.password.label_tag }}
+      </label>
+      {% render_field form.password class="shadow appearance-none border border-red-500 rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" name="{{ form.password.name }}" id="id_{{ form.password.name }}" placeholder="******************" %}
+    </div>
+    <div class="flex items-center justify-between">
+      <button
+        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+        type="submit" value="login">
+        Sign In
+      </button>
+      <input type="hidden" name="next" value="{{ next }}" />
+      {# Assumes you setup the password_reset view in your URLconf #}
+      <a class="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800"
+        href="{% url 'password_reset' %}">
+        Forgot Password?
+      </a>
+    </div>
+  </form>
+</div>
 
 {% endblock %}
