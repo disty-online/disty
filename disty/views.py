@@ -9,6 +9,7 @@ from django.http import HttpResponse, Http404
 from django.shortcuts import render, redirect, HttpResponseRedirect, get_object_or_404
 from django.utils import timezone
 from disty.models import File, DownloadUrl, Access, UploadUrl
+from disty.settings import DEFAULT_DOWNLOAD_EXPIRY_DAYS
 from disty.forms import (
     FileForm,
     UploadUrlForm,
@@ -180,7 +181,12 @@ def upload(request, ruuid):
             file.storage_location = "local"
             file.origin = url.description
             file.save()
-            url = DownloadUrl(created_at=now, owner=owner, file=file)
+            default_expiry = timezone.now() + datetime.timedelta(
+                days=DEFAULT_DOWNLOAD_EXPIRY_DAYS
+            )
+            url = DownloadUrl(
+                created_at=now, owner=owner, expiry=default_expiry, file=file
+            )
             url.save()
             return redirect("home")
     else:
