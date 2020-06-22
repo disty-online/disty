@@ -179,7 +179,7 @@ def upload(request, ruuid):
             file.created_at = now
             file.name = file.document.name
             file.storage_location = "local"
-            file.origin = url.description
+            file.origin = url.url
             file.save()
             default_expiry = timezone.now() + datetime.timedelta(
                 days=DEFAULT_DOWNLOAD_EXPIRY_DAYS
