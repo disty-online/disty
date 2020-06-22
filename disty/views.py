@@ -206,14 +206,14 @@ def download(request, uuid):
         raise PermissionDenied
     if not url.download_limit:
         raise PermissionDenied
-    file = File.objects.get(name=url.file.name)
+    file = File.objects.get(pk=url.file.pk)
     if all([file.origin == "external", str(user) == "AnonymousUser"]):
         raise PermissionDenied
     Access(
         source_ip=get_client_ip(request),
         user_agent=request.META.get("HTTP_USER_AGENT", ""),
         timestamp=timezone.now(),
-        file=File.objects.get(name=file.name),
+        file=File.objects.get(pk=file.pk),
         url=url,
         user=url.owner,
     ).save()
