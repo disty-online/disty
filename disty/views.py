@@ -207,7 +207,7 @@ def download(request, uuid):
     if not url.download_limit:
         raise PermissionDenied
     file = File.objects.get(pk=url.file.pk)
-    if all([file.origin == "external", str(user) == "AnonymousUser"]):
+    if all([file.origin != "internal", str(user) == "AnonymousUser"]):
         raise PermissionDenied
     Access(
         source_ip=get_client_ip(request),
