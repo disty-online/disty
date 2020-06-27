@@ -1,79 +1,143 @@
 import datetime
 import uuid
-from unittest.mock import patch
-from django.test import TestCase, RequestFactory, Client
+from unittest import mock
+from django.core.files.base import ContentFile
 from django.utils import timezone
-from django.urls import reverse
+from django.http import Http404
+from django.contrib.auth.models import AnonymousUser, User
+from django.test import RequestFactory, TestCase
 import pytest
-from disty.models import File, DownloadUrl, Access
-from django.core.files.uploadedfile import SimpleUploadedFile
+from disty.views import (
+    home,
+    new_url,
+    edit_upload,
+    edit_upload_url,
+    access,
+    model_form_upload,
+)
+from disty.forms import UploadUrlForm, EditUploadUrlForm, FileForm
+from disty.models import UploadUrl, File
 
 
-class ModelsTestCase(TestCase):
-    @pytest.mark.freeze_time("2020-01-01")
-    def setUp(self):
-        tomorrow = timezone.now() + datetime.timedelta(days=1)
-        Role.objects.create(role_name="admin")
-        User.objects.create(
-            name="admin_user", password="password", role=Role.objects.get(pk=1)
-        )
-        File.objects.create(
-            name="0001.sh",
-            storage_location="local",
-            path="my_dir/some/path",
-            origin="internal",
-            password="my_password",
-            created_at=timezone.now(),
-            owner=User.objects.get(pk=1),
-        )
-
-        url = DownloadUrl.objects.create(
-            expiry=tomorrow,
-            download_limit=0,
-            created_at=timezone.now(),
-            owner=User.objects.get(pk=1),
-            file=File.objects.get(pk=1),
-        )
-        url.save()
-        Access.objects.create(
-            source_ip="192.168.0.1",
-            user_agent="Mozilla/5.0 (Linux; Android 4.0.4; Galaxy Nexus Build/IMM76B) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.133 Mobile Safari/535.19",
-            timestamp=timezone.now(),
-            file=File.objects.get(pk=1),
-            user=User.objects.get(pk=1),
-            url=DownloadUrl.objects.get(pk=1),
-        )
-
-    def tearDown(self):
-        File.objects.all().delete()
-
-    def test_create_user(self):
-        admin = User.objects.get(name="admin_user")
-        assert str(admin.role) == "admin"
-
-    @pytest.mark.freeze_time("2020-01-01")
-    def test_url(self):
-        tomorrow = timezone.now() + datetime.timedelta(days=1)
-        my_url = DownloadUrl.objects.get(pk=1)
-        assert my_url.download_limit == 0
-        assert str(my_url.owner) == "admin_user"
-        assert str(my_url.file) == "0001.sh"
-        assert my_url.expiry == tomorrow
-        assert my_url.created_at == timezone.now()
-
-    @pytest.mark.freeze_time("2020-01-01")
-    def test_access(self):
-        my_access = Access.objects.get(pk=1)
-        assert str(my_access.file) == "0001.sh"
-        assert str(my_access.user) == "admin_user"
-
-
-class ViewsTestCase(TestCase):
+class SimpleTest(TestCase):
     def setUp(self):
         # Every test needs access to the request factory.
         self.factory = RequestFactory()
+        self.user = User.objects.create_user(
+            username="tester", email="tester@testing.com", password="mypassword"
+        )
 
-    def test_home(self):
-        response = self.client.get(reverse("home"))
-        assert response.status_code == 200
-        self.assertContains(response, "Model Form Upload")
+    def test_home_anonymous(self):
+        request = self.factory.get("/disty/")
+        request.user = AnonymousUser()
+        response = home(request)
+        self.assertEqual(response.status_code, 302)
+
+    def test_home_authenticated(self):
+        request = self.factory.get("/disty/")
+        request.user = self.user
+        response = home(request)
+        self.assertEqual(response.status_code, 200)
+
+    def test_new_url_anonymous(self):
+        request = self.factory.get("/disty/new_url/")
+        request.user = AnonymousUser()
+        response = home(request)
+        self.assertEqual(response.status_code, 302)
+
+    def test_new_url_get(self):
+        request = self.factory.get("/disty/new_url/")
+        request.user = self.user
+        response = new_url(request)
+        self.assertEqual(response.status_code, 200)
+
+    @pytest.mark.freeze_time("2020-01-01")
+    def test_new_url_post(self):
+        tomorrow = timezone.now() + datetime.timedelta(days=1)
+        form_data = {"description": "something", "expiry": tomorrow}
+        my_form = UploadUrlForm(data=form_data)
+        self.assertTrue(my_form.is_valid())
+        with mock.patch("disty.views.UploadUrlForm") as Form:
+            Form.return_value = my_form
+            request = self.factory.post("/disty/new_url/", form=my_form)
+            request.user = self.user
+            response = new_url(request)
+            self.assertEqual(response.status_code, 200)
+
+    def test_edit_upload_url_anonymous(self):
+        request = self.factory.get("/disty/edit_upload_url/form/")
+        request.user = AnonymousUser()
+        response = edit_upload(request, url=uuid.uuid4())
+        self.assertEqual(response.status_code, 302)
+
+    @pytest.mark.freeze_time("2020-01-01")
+    def test_edit_upload_url_404(self):
+        tomorrow = timezone.now() + datetime.timedelta(days=1)
+        request = self.factory.get("/disty/edit_upload_url/form/")
+        request.user = self.user
+        with self.assertRaises(Http404):
+            response = edit_upload_url(request, url=uuid.uuid4())
+            self.assertEqual(response.status_code, 404)
+
+    @pytest.mark.freeze_time("2020-01-01")
+    def test_edit_upload_url_200(self):
+        tomorrow = timezone.now() + datetime.timedelta(days=1)
+        upload_url = UploadUrl(
+            expiry=tomorrow,
+            owner=self.user,
+            description="description",
+            created_at=timezone.now(),
+        )
+        upload_url.save()
+        request = self.factory.get("/disty/edit_upload_url/form/")
+        request.user = self.user
+        response = edit_upload_url(request, url=upload_url.url)
+        self.assertEqual(response.status_code, 200)
+
+    @pytest.mark.freeze_time("2020-01-01")
+    def test_edit_upload_url_post(self):
+        tomorrow = timezone.now() + datetime.timedelta(days=1)
+        upload_url = UploadUrl(
+            expiry=tomorrow,
+            owner=self.user,
+            description="description",
+            created_at=timezone.now(),
+        )
+        upload_url.save()
+        form_data = {
+            "description": "something",
+            "expiry": tomorrow,
+        }
+        my_form = EditUploadUrlForm(data=form_data, instance=upload_url)
+        self.assertTrue(my_form.is_valid())
+        with mock.patch("disty.views.EditUploadUrlForm") as Form:
+            Form.return_value = my_form
+            request = self.factory.post("/disty/edit_upload_url/form/", form=my_form)
+            request.user = self.user
+            response = edit_upload_url(request, url=upload_url.url)
+            self.assertEqual(response.status_code, 200)
+
+    def test_access_anonymous(self):
+        request = self.factory.get("/disty/access/")
+        request.user = AnonymousUser()
+        response = access(request)
+        self.assertEqual(response.status_code, 302)
+
+    def test_access_get(self):
+        request = self.factory.get("/disty/access/")
+        request.user = self.user
+        response = access(request)
+        self.assertEqual(response.status_code, 200)
+
+    def test_model_form_upload_anonymous(self):
+        request = self.factory.get("/disty/access/")
+        request.user = AnonymousUser()
+        response = model_form_upload(request)
+        self.assertEqual(response.status_code, 302)
+
+    def test_model_form_upload_get(self):
+        request = self.factory.get("/disty/access/")
+        request.user = self.user
+        response = model_form_upload(request)
+        self.assertEqual(response.status_code, 200)
+
