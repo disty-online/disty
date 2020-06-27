@@ -74,9 +74,6 @@ def edit_upload_url(request, url):
         url_form = EditUploadUrlForm(request.POST, instance=my_url)
         if url_form.is_valid():
             url = url_form.save(commit=False)
-            if url.description == "internal":
-                # TODO: Add proper handling
-                raise Exception
             url.save()
             output_link = request.build_absolute_uri().replace(
                 f"edit_upload_url/form/{str(url)}", f"upload/{str(url)}"
@@ -145,6 +142,7 @@ def edit_upload(request, url):
     """
         Allows existing URLs to be edited.
     """
+
     my_url = get_object_or_404(DownloadUrl, url=url)
     if request.method == "POST":
         url_form = EditDownloadUrlForm(request.POST, instance=my_url)
