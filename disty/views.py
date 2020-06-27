@@ -49,9 +49,6 @@ def new_url(request):
             url = form.save(commit=False)
             url.created_at = timezone.now()
             url.owner = user
-            if url.description == "internal":
-                # TODO: Add proper handling
-                raise Exception
             url.save()
             output_link = request.build_absolute_uri().replace(
                 "new_url/", f"upload/{str(url)}"
