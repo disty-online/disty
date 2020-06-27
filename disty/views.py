@@ -3,7 +3,7 @@ import os
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.core.exceptions import PermissionDenied
+from django.core.exceptions import PermissionDenied, ObjectDoesNotExist
 from django.core.files.storage import FileSystemStorage
 from django.http import HttpResponse, Http404
 from django.shortcuts import render, redirect, HttpResponseRedirect, get_object_or_404
@@ -195,7 +195,10 @@ def download(request, uuid):
     """
     if not uuid:
         raise PermissionDenied
-    url = DownloadUrl.objects.get(url=uuid)
+    try:
+        url = DownloadUrl.objects.get(url=uuid)
+    except ObjectDoesNotExist as err:
+        raise Http404
     user = request.user
     if url.owner != user and url.expiry < timezone.now():
         raise PermissionDenied
