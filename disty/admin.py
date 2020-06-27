@@ -7,7 +7,7 @@ admin.site.site_header = "Disty"
 
 
 class FileAdmin(admin.ModelAdmin):
-    list_display = ("name", "owner", "created_at", "checksum")
+    list_display = ("name", "owner", "created_at", "checksum", "origin")
 
 
 class AccessAdmin(admin.ModelAdmin):
