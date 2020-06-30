@@ -23,10 +23,17 @@ from disty.forms import (
 def home(request):
     user = User.objects.get(username=request.user)
     urls = DownloadUrl.objects.filter(owner=user.id)
-    external_file_urls = [url for url in urls if url.file.origin != "internal"]
-    internal_file_urls = [url for url in urls if url.file.origin == "internal"]
     upload_urls = UploadUrl.objects.filter(owner=user.id)
     output_link = request.build_absolute_uri() + "upload/"
+    external_file_urls = []
+    internal_file_urls = []
+    
+    for url in urls:
+        if url.file.origin == "internal":
+            internal_file_urls.append(url)
+        else:
+            external_file_urls.append(url)
+    
     return render(
         request,
         "disty/home.html",
