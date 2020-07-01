@@ -9,7 +9,7 @@ from django.core.exceptions import PermissionDenied
 from django.utils import timezone
 from django.http import Http404
 from django.contrib.auth.models import AnonymousUser, User
-from django.test import RequestFactory, TestCase, Client, client
+from django.test import RequestFactory, TestCase, client
 import pytest
 from disty.views import (
     home,
@@ -389,8 +389,7 @@ class ViewTest(TestCase):
             self.assertEqual(response.status_code, 403)
 
     def test_upload_anonymous(self):
-        c = Client()
-        response = c.get("/disty/upload/")
+        response = self.client.get("/disty/upload/")
         self.assertEqual(response.status_code, 403)
     
     def test_upload_authenticated(self):
@@ -402,9 +401,8 @@ class ViewTest(TestCase):
             created_at=timezone.now(),
         )
         upload_url.save()
-        c = Client()
-        c.login(username="tester", password="mypassword")
-        response = c.get(f"/disty/upload/{upload_url.url}")
+        self.client.login(username="tester", password="mypassword")
+        response = self.client.get(f"/disty/upload/{upload_url.url}")
         self.assertEqual(response.status_code, 200)
 
     def test_upload_post(self):
@@ -416,10 +414,9 @@ class ViewTest(TestCase):
             created_at=timezone.now(),
         )
         upload_url.save()
-        c = Client()
-        c.login(username="tester", password="mypassword")
+        self.client.login(username="tester", password="mypassword")
         with open("disty/test_data/hello.txt") as fp:
-            response = c.post(f"/disty/upload/{upload_url.url}", {'name': 'hello.txt', 'document': fp})
+            response = self.client.post(f"/disty/upload/{upload_url.url}", {'name': 'hello.txt', 'document': fp})
         self.assertEqual(response.status_code, 302)
 
     def test_upload_expired(self):
@@ -431,26 +428,22 @@ class ViewTest(TestCase):
             created_at=timezone.now(),
         )
         upload_url.save()
-        c = Client()
-        c.login(username="tester", password="mypassword")
+        self.client.login(username="tester", password="mypassword")
         with open("disty/test_data/hello.txt") as fp:
-            response = c.post(f"/disty/upload/{upload_url.url}", {'name': 'hello.txt', 'document': fp})
+            response = self.client.post(f"/disty/upload/{upload_url.url}", {'name': 'hello.txt', 'document': fp})
         self.assertEqual(response.status_code, 403)
 
     def test_model_form_upload_anonymous(self):
-        c = Client()
-        response = c.get("/disty/uploads/form/")
+        response = self.client.get("/disty/uploads/form/")
         self.assertEqual(response.status_code, 302)
 
     def test_model_form_upload_authenticated(self):
-        c = Client()
-        c.login(username="tester", password="mypassword")
-        response = c.get("/disty/uploads/form/")
+        self.client.login(username="tester", password="mypassword")
+        response = self.client.get("/disty/uploads/form/")
         self.assertEqual(response.status_code, 200)
 
     def test_model_form_upload_post(self):
-        c = Client()
-        c.login(username="tester", password="mypassword")
+        self.client.login(username="tester", password="mypassword")
         with open("disty/test_data/hello.txt") as fp:
-            response = c.post("/disty/uploads/form/", {'description': 'my file description', 'document': fp, 'download_limit': 2, 'expiry': '2020-07-02 14:03:29'})
+            response = self.client.post("/disty/uploads/form/", {'description': 'my file description', 'document': fp, 'download_limit': 2, 'expiry': '2020-07-02 14:03:29'})
         self.assertEqual(response.status_code, 302)    
