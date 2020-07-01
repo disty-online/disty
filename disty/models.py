@@ -4,12 +4,12 @@ from django.db import models
 from django.conf import settings
 from django.db.models.signals import post_delete
 from django.dispatch import receiver
-from disty.settings import DEFAULT_DOWNLOAD_LIMIT
+from disty.settings import DEFAULT_DOWNLOAD_LIMIT, UPLOAD_FOLDER
 import os
 
 
 class File(models.Model):
-    document = models.FileField(upload_to="documents/")
+    document = models.FileField(upload_to=UPLOAD_FOLDER)
     name = models.CharField(max_length=100, db_index=True)
     description = models.CharField(max_length=255, blank=True)
     checksum = models.CharField(max_length=150)
