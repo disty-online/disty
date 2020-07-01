@@ -46,7 +46,6 @@ def home(request):
         },
     )
 
-
 @login_required
 def new_url(request):
     """

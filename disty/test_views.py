@@ -9,7 +9,7 @@ from django.core.exceptions import PermissionDenied
 from django.utils import timezone
 from django.http import Http404
 from django.contrib.auth.models import AnonymousUser, User
-from django.test import RequestFactory, TestCase, client
+from django.test import RequestFactory, TestCase, Client, client
 import pytest
 from disty.views import (
     home,
@@ -46,9 +46,66 @@ class ViewTest(TestCase):
         self.assertEqual(response.status_code, 302)
 
     def test_home_authenticated(self):
+        tomorrow = timezone.now() + datetime.timedelta(days=1)
+        
+        file1 = File(
+            name="hello.txt",
+            description="hello.txt",
+            origin="internal",
+            created_at=timezone.now(),
+            owner=self.user,
+        )
+        file1.document = DjangoFile(open("disty/test_data/hello.txt"))
+        file1.save()
+        download_url = DownloadUrl(
+            expiry=tomorrow,
+            download_limit=10,
+            created_at=timezone.now(),
+            owner=self.user,
+            file=file1,
+        )
+        download_url.save()
+        
+        file2 = File(
+            name="hello.txt",
+            description="hello.txt",
+            origin="external",
+            created_at=timezone.now(),
+            owner=self.user,
+        )
+        file2.document = DjangoFile(open("disty/test_data/hello.txt"))
+        file2.save()
+        download_url = DownloadUrl(
+            expiry=tomorrow,
+            download_limit=10,
+            created_at=timezone.now(),
+            owner=self.user,
+            file=file2,
+        )
+        download_url.save()
+        
+        file3 = File(
+            name="hello.txt",
+            description="hello.txt",
+            origin="other",
+            created_at=timezone.now(),
+            owner=self.user,
+        )
+        file3.document = DjangoFile(open("disty/test_data/hello.txt"))
+        file3.save()
+        download_url = DownloadUrl(
+            expiry=tomorrow,
+            download_limit=10,
+            created_at=timezone.now(),
+            owner=self.user,
+            file=file3,
+        )
+        download_url.save()
+
         request = self.factory.get("/disty/")
         request.user = self.user
         response = home(request)
+        
         self.assertEqual(response.status_code, 200)
 
     def test_new_url_anonymous(self):
@@ -167,8 +224,8 @@ class ViewTest(TestCase):
     def test_edit_upload_get(self):
         tomorrow = timezone.now() + datetime.timedelta(days=1)
         my_file = File(
-            name="django.png",
-            description="django.png",
+            name="hello.txt",
+            description="hello.txt",
             origin="internal",
             created_at=timezone.now(),
             owner=self.user,
@@ -192,8 +249,8 @@ class ViewTest(TestCase):
     def test_edit_upload_post(self):
         tomorrow = timezone.now() + datetime.timedelta(days=1)
         my_file = File(
-            name="django.png",
-            description="django.png",
+            name="hello.txt",
+            description="hello.txt",
             origin="internal",
             created_at=timezone.now(),
             owner=self.user,
@@ -221,8 +278,8 @@ class ViewTest(TestCase):
     def test_download_ok(self):
         tomorrow = timezone.now() + datetime.timedelta(days=1)
         my_file = File(
-            name="django.png",
-            description="django.png",
+            name="hello.txt",
+            description="hello.txt",
             origin="internal",
             created_at=timezone.now(),
             owner=self.user,
@@ -259,8 +316,8 @@ class ViewTest(TestCase):
     def test_download_nok_external_anonymous(self):
         tomorrow = timezone.now() + datetime.timedelta(days=1)
         my_file = File(
-            name="django.png",
-            description="django.png",
+            name="hello.txt",
+            description="hello.txt",
             origin="xpto",
             created_at=timezone.now(),
             owner=self.user,
@@ -284,8 +341,8 @@ class ViewTest(TestCase):
     def test_download_nok_limit(self):
         tomorrow = timezone.now() + datetime.timedelta(days=1)
         my_file = File(
-            name="django.png",
-            description="django.png",
+            name="hello.txt",
+            description="hello.txt",
             origin="internal",
             created_at=timezone.now(),
             owner=self.user,
@@ -309,8 +366,8 @@ class ViewTest(TestCase):
     def test_download_nok_expired(self):
         tomorrow = timezone.now() + datetime.timedelta(days=-1)
         my_file = File(
-            name="django.png",
-            description="django.png",
+            name="hello.txt",
+            description="hello.txt",
             origin="internal",
             created_at=timezone.now(),
             owner=self.user,
@@ -330,3 +387,70 @@ class ViewTest(TestCase):
             request.user = AnonymousUser()
             response = download(request, uuid=download_url.url)
             self.assertEqual(response.status_code, 403)
+
+    def test_upload_anonymous(self):
+        c = Client()
+        response = c.get("/disty/upload/")
+        self.assertEqual(response.status_code, 403)
+    
+    def test_upload_authenticated(self):
+        tomorrow = timezone.now() + datetime.timedelta(days=1)
+        upload_url = UploadUrl(
+            expiry=tomorrow,
+            owner=self.user,
+            description="description",
+            created_at=timezone.now(),
+        )
+        upload_url.save()
+        c = Client()
+        c.login(username="tester", password="mypassword")
+        response = c.get(f"/disty/upload/{upload_url.url}")
+        self.assertEqual(response.status_code, 200)
+
+    def test_upload_post(self):
+        tomorrow = timezone.now() + datetime.timedelta(days=1)
+        upload_url = UploadUrl(
+            expiry=tomorrow,
+            owner=self.user,
+            description="description",
+            created_at=timezone.now(),
+        )
+        upload_url.save()
+        c = Client()
+        c.login(username="tester", password="mypassword")
+        with open("disty/test_data/hello.txt") as fp:
+            response = c.post(f"/disty/upload/{upload_url.url}", {'name': 'hello.txt', 'document': fp})
+        self.assertEqual(response.status_code, 302)
+
+    def test_upload_expired(self):
+        tomorrow = timezone.now() + datetime.timedelta(days=-1)
+        upload_url = UploadUrl(
+            expiry=tomorrow,
+            owner=self.user,
+            description="description",
+            created_at=timezone.now(),
+        )
+        upload_url.save()
+        c = Client()
+        c.login(username="tester", password="mypassword")
+        with open("disty/test_data/hello.txt") as fp:
+            response = c.post(f"/disty/upload/{upload_url.url}", {'name': 'hello.txt', 'document': fp})
+        self.assertEqual(response.status_code, 403)
+
+    def test_model_form_upload_anonymous(self):
+        c = Client()
+        response = c.get("/disty/uploads/form/")
+        self.assertEqual(response.status_code, 302)
+
+    def test_model_form_upload_authenticated(self):
+        c = Client()
+        c.login(username="tester", password="mypassword")
+        response = c.get("/disty/uploads/form/")
+        self.assertEqual(response.status_code, 200)
+
+    def test_model_form_upload_post(self):
+        c = Client()
+        c.login(username="tester", password="mypassword")
+        with open("disty/test_data/hello.txt") as fp:
+            response = c.post("/disty/uploads/form/", {'description': 'my file description', 'document': fp, 'download_limit': 2, 'expiry': '2020-07-02 14:03:29'})
+        self.assertEqual(response.status_code, 302)    
