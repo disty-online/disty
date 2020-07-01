@@ -36,7 +36,7 @@ class File(models.Model):
         self.path = self.document.path
         super().save(*args, **kwargs)
 
-    def delete(self):
+    def delete(self, *args, **kwargs):
         super().delete(*args, **kwargs)
 
     def __str__(self):
