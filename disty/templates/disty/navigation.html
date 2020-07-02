@@ -1,30 +1,45 @@
 {% extends 'base.html' %} {% block content %}
 
-<ul class="flex pt-4">
-    <li class="flex-1 mr-2">
-        <a class="text-center block border border-white rounded hover:border-gray-200 text-blue-500 hover:bg-gray-200 py-2 px-4"
-            href="{% url 'home' %}">HOME</a>
-    </li>
-    <li class="flex-1 mr-2">
-        <a class="text-center block border border-white rounded hover:border-gray-200 text-blue-500 hover:bg-gray-200 py-2 px-4"
-            href="{% url 'model_form_upload' %}">Upload File</a>
-    </li>
-    <li class="flex-1 mr-2">
-        <a class="text-center block border border-white rounded hover:border-gray-200 text-blue-500 hover:bg-gray-200 py-2 px-4"
-            href="{% url 'new_url' %}">Create upload link</a>
-    </li>
-    <li class="flex-1 mr-2">
-        <a class="text-center block border border-white rounded hover:border-gray-200 text-blue-500 hover:bg-gray-200 py-2 px-4"
-            href="{% url 'access' %}">File download history</a>
-    </li>
-    <li class="flex-1 mr-2">
-        <a class="text-center block border border-white rounded hover:border-gray-200 text-blue-500 hover:bg-gray-200 py-2 px-4"
-            href="password_change/">Change my password</a>
-    </li>
-    <li
-        class="flex-1 mr-2 text-center block border border-white rounded hover:border-gray-200 text-blue-500 hover:bg-gray-200 py-2 px-4">
-        Logged in as: {{ request.user.username }} <a href="logout/">(Logout)</a>
-    </li>
-</ul>
+<nav class="flex items-center justify-between flex-wrap bg-gray-700 p-6">
+    <div class="flex items-center flex-shrink-0 text-white mr-6">
+        <svg class="fill-current h-8 w-8 mr-2" width="54" height="54" xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 3333.33 2582.62" shape-rendering="geometricPrecision" text-rendering="geometricPrecision"
+            image-rendering="optimizeQuality" fill-rule="evenodd" clip-rule="evenodd">
+            <path
+                d="M1666.67 851.23c201.86 0 384.63 81.82 516.91 214.11 132.29 132.28 214.11 315.06 214.11 516.91 0 201.85-81.82 384.62-214.11 516.89-132.29 132.29-315.05 214.11-516.91 214.11-201.85 0-384.62-81.82-516.9-214.11-132.29-132.27-214.11-315.04-214.11-516.89 0-201.85 81.82-384.61 214.11-516.91 132.28-132.29 315.04-214.11 516.9-214.11zM67.18 562.64h121.97V295.21c0-37.19 30.15-67.35 67.34-67.35H376.1V67.33c0-37.18 30.15-67.34 67.35-67.34h1092.14c37.19 0 67.34 30.16 67.34 67.34v160.53H3075.8c37.19 0 67.34 30.16 67.34 67.35v267.43H3266c37.19 0 67.34 30.15 67.34 67.34 0 4.87-.52 9.63-1.5 14.23l-235.46 1731.01c-7.69 56.44-32.35 108.8-70.21 146.63-37.52 37.49-87.06 60.76-145.4 60.76H398.71c-58.66 0-109.25-23.49-147.2-61.43-38.13-38.12-62.78-90.86-68.79-148.2L.37 636.81c-3.78-36.89 23.07-69.88 59.98-73.66 2.3-.24 4.57-.35 6.83-.35V562.62zM256.5 697.33H141.8l174.56 1661.98c2.78 26.56 13.48 50.29 29.86 66.66 13.56 13.56 31.61 21.96 52.49 21.96h2482.07c20.26 0 37.55-8.17 50.69-21.3 16.86-16.85 28.06-41.61 31.81-69.29l225.81-1660H256.52v.01zm67.35-334.78v199.62l2684.61-28.54V362.56H1535.61c-37.19 0-67.36-30.16-67.36-67.34V134.69H510.81v160.53c0 37.19-30.15 67.34-67.34 67.34H323.86v-.02zM1881.2 1434.63c11.22-1.76 22.44-2.63 33.63-2.54 47.15.31 92.67 17.2 128.52 55.81 7.52 8.08 14.59 17.18 21.23 27.37 22.47 34.57 33.98 80.68 33.49 125.85-.48 44.31-12.46 88.41-36.87 120.9-15.91 21.15-36.36 38.4-60.85 52.09-23.62 13.23-51.11 23.26-82.02 30.41l-5.75.74H1399.4l-3.22-.31c-18.76-2.38-35.78-6.83-51.18-13.16-15.94-6.58-30.07-15.14-42.53-25.52-11.79-9.82-22.09-21.01-30.88-33.16-23.39-32.33-36.05-71.82-36.35-111.1-.28-39.72 12.08-79.28 38.77-111.28 8.67-10.36 18.8-19.92 30.45-28.34 13.56-9.83 29.11-18.15 46.6-24.94 12.09-4.68 24.94-8.64 38.65-11.79 15.42-61.34 48.4-108.62 90.7-141.44 39.56-30.71 87.27-48.57 136.35-53.32 48.88-4.72 99.17 3.61 144.29 25.24 49.31 23.67 92.29 63.05 120.16 118.49l-.02.02zm211.77-278.68c-109.08-109.09-259.81-176.57-426.3-176.57-166.47 0-317.2 67.48-426.29 176.57-109.09 109.09-176.57 259.82-176.57 426.3 0 166.47 67.48 317.2 176.57 426.29 109.08 109.09 259.81 176.57 426.29 176.57 166.47 0 317.2-67.48 426.3-176.57 109.09-109.09 176.57-259.81 176.57-426.29 0-166.47-67.48-317.21-176.57-426.3z"
+                fill-rule="nonzero" /></svg>
+        <a href="{% url 'home' %}" class="font-semibold text-xl tracking-tight">Disty</a>
+    </div>
+    <div class="w-full block flex-grow lg:flex lg:items-center lg:w-auto">
+        <div class="text-sm lg:flex-grow">
+            <a href="{% url 'home' %}" class="block mt-4 lg:inline-block lg:mt-0 text-white hover:text-red-300 mr-4">
+                Home
+            </a>
+            <a href="{% url 'model_form_upload' %}"
+                class="block mt-4 lg:inline-block lg:mt-0 text-white hover:text-red-300 mr-4">
+                Upload File
+            </a>
+            <a href="{% url 'new_url' %}" class="block mt-4 lg:inline-block lg:mt-0 text-white hover:text-red-300 mr-4">
+                Create upload link
+            </a>
+            <a href="{% url 'access' %}" class="block mt-4 lg:inline-block lg:mt-0 text-white hover:text-red-300 mr-4">
+                File download history
+            </a>
+            <a href="password_change/" class="block mt-4 lg:inline-block lg:mt-0 text-white hover:text-red-300 mr-4">
+                Change my password
+            </a>
+            <a href="{% url 'new_url' %}" class="block mt-4 lg:inline-block lg:mt-0 text-white hover:text-red-300 mr-4">
+                Create upload link
+            </a>
+        </div>
+        <div>
+            <p class="block mt-4 lg:inline-block lg:mt-0 text-xs text-white hover:text-white ml-32">
+                Logged in as: {{ request.user.username }}
+            </p>
+            <a href="logout/"
+                class="inline-block text-sm px-4 py-2 leading-none border rounded text-white border-white hover:border-transparent hover:text-red-600 hover:bg-white mt-4 lg:mt-0">Logout</a>
+        </div>
+    </div>
+</nav>
 
 {% endblock %}
