@@ -10,5 +10,4 @@ COPY . .
 RUN pip install poetry
 RUN poetry config virtualenvs.create false && \
     poetry install --no-dev --no-interaction --no-ansi
-RUN python manage.py migrate
 ENTRYPOINT ["/app/entrypoint.sh"]
