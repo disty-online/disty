@@ -6,21 +6,30 @@
   by {{ user }}:</p>
 <table class="table-auto">
   <thead>
-    <tr class="bg-gray-200">
-      <th class="border-t border-b px-4 py-2 tracking-wide text-sm font-bold">Date</th>
-      <th class="border-t border-b px-4 py-2 tracking-wide text-sm font-bold">From IP</th>
-      <th class="border-t border-b px-4 py-2 tracking-wide text-sm font-bold">File URL</th>
-      <th class="border-t border-b px-4 py-2 tracking-wide text-sm font-bold">file name</th>
+    <tr class="bg-gray-500">
+      <th class="rounded-tl-lg px-4 py-2 tracking-wide text-sm font-bold text-gray-100" font-bold">Date</th>
+      <th class="px-4 py-2 tracking-wide text-sm text-gray-100" font-bold">From IP</th>
+      <th class="px-4 py-2 tracking-wide text-sm text-gray-100" font-bold">File URL</th>
+      <th class="rounded-tr-lg px-4 py-2 tracking-wide text-sm text-gray-100" font-bold">file name</th>
     </tr>
   </thead>
   <tbody>
     {% for access in accesses %}
-    <tr>
-      <td class="border-b px-4 py-2 tracking-wide text-sm">{{ access.timestamp }}</td>
-      <td class="border-b px-4 py-2 tracking-wide text-sm">{{ access.source_ip }}</td>
-      <td class="border-b px-4 py-2 tracking-wide text-sm">{{ access.url }}</td>
-      <td class="border-b px-4 py-2 tracking-wide text-sm">{{access.file }}</td>
+    {% if forloop.last %}
+    <tr class="hover:bg-red-100">
+      <td class="border-b border-l border-gray-500 px-4 py-2 tracking-wide text-sm">{{ access.timestamp }}</td>
+      <td class="border-b border-gray-500 px-4 py-2 tracking-wide text-sm">{{ access.source_ip }}</td>
+      <td class="border-b border-gray-500 px-4 py-2 tracking-wide text-sm">{{ access.url }}</td>
+      <td class="border-b border-r border-gray-500 px-4 py-2 tracking-wide text-sm">{{access.file }}</td>
     </tr>
+    {% else %}
+    <tr class="hover:bg-red-100">
+      <td class="border-l border-gray-500 px-4 py-2 tracking-wide text-sm">{{ access.timestamp }}</td>
+      <td class="border-gray-500 px-4 py-2 tracking-wide text-sm">{{ access.source_ip }}</td>
+      <td class="border-gray-500 px-4 py-2 tracking-wide text-sm">{{ access.url }}</td>
+      <td class="border-r border-gray-500 px-4 py-2 tracking-wide text-sm">{{access.file }}</td>
+    </tr>
+    {% endif %}
     {% endfor %}
   </tbody>
 </table>
