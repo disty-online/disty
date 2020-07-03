@@ -4,6 +4,7 @@ echo "[$(date -u "+%Y-%m-%d %H:%M:%S +0000")] [INFO] Starting disty"
 
 echo "[$(date -u "+%Y-%m-%d %H:%M:%S +0000")] [INFO] Running migrations"
 echo ${SECRET_KEY} > /dev/null
+echo ${DJANGO_ALLOWED_HOSTS} > /dev/null
 python manage.py migrate
 
 echo "[$(date -u "+%Y-%m-%d %H:%M:%S +0000")] Creating superuser"
