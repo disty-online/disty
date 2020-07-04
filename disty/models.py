@@ -4,7 +4,7 @@ import uuid
 from django.db import models
 from django.conf import settings
 from django.dispatch import receiver
-from disty.settings import DEFAULT_DOWNLOAD_LIMIT, UPLOAD_FOLDER
+from disty.settings import DEFAULT_DOWNLOAD_LIMIT, UPLOAD_FOLDER, logger
 
 
 class File(models.Model):
@@ -24,6 +24,7 @@ class File(models.Model):
         Saves file on disc and generates a sha1sum.
         """
         super().save(*args, **kwargs)
+        logger.debug("Saving file %s", self.document.path)
         checksum = hashlib.sha1()
         with open(self.document.path, "rb") as file:
             while True:
@@ -80,5 +81,8 @@ class Access(models.Model):
 @receiver(models.signals.post_delete, sender=File)
 def delete_file(sender, instance, *args, **kwargs):
     """ Deletes physical files on `post_delete` """
+    logger.debug("Deleting file %s", instance.document.path)
     if os.path.isfile(instance.document.path):
         os.remove(instance.document.path)
+    else:
+        logger.error("Unable to find file %s", instance.document.path)

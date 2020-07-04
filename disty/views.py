@@ -7,7 +7,7 @@ from django.http import HttpResponse, Http404
 from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
 from disty.models import File, DownloadUrl, Access, UploadUrl
-from disty.settings import DEFAULT_DOWNLOAD_EXPIRY_DAYS
+from disty.settings import DEFAULT_DOWNLOAD_EXPIRY_DAYS, logger
 from disty.forms import (
     FileForm,
     UploadUrlForm,
@@ -200,18 +200,25 @@ def download(request, uuid):
         Download view for all public files.
     """
     if not uuid:
+        logger.debug("UUID %s not found", uuid)
         raise PermissionDenied
     try:
         url = DownloadUrl.objects.get(url=uuid)
     except ObjectDoesNotExist:
+        logger.debug("Unable to find download URL %s", uuid)
         raise Http404
     user = request.user
     if url.owner != user and url.expiry < timezone.now():
+        logger.debug(
+            "Tried to access url %s expiry %s with user %s", url, url.expiry, user
+        )
         raise PermissionDenied
     if not url.download_limit:
+        logger.info("Number of downloads exceeded for %s", url)
         raise PermissionDenied
     file = File.objects.get(pk=url.file.pk)
     if all([file.origin != "internal", str(user) == "AnonymousUser"]):
+        logger.debug("Anonymous user tried to access externally generated file %s", url)
         raise PermissionDenied
     Access(
         source_ip=get_client_ip(request),
@@ -222,6 +229,7 @@ def download(request, uuid):
         user=url.owner,
     ).save()
     if os.path.exists(url.file.document.path):
+        logger.debug("Found file %s", url.file.document.path)
         with open(url.file.document.path, "rb") as fh:
             response = HttpResponse(fh.read(), content_type="application/octet-stream")
             response["Content-Disposition"] = "inline; filename=" + os.path.basename(
@@ -231,6 +239,7 @@ def download(request, uuid):
                 url.download_limit -= 1
             url.save()
             return response
+    logger.error("Could not find file %s", url.file.document.path)
     raise Http404
 
 
