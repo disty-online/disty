@@ -8,6 +8,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
 from disty.models import File, DownloadUrl, Access, UploadUrl
 from disty.settings import DEFAULT_DOWNLOAD_EXPIRY_DAYS, logger
+from disty import __version__
 from disty.forms import (
     FileForm,
     UploadUrlForm,
@@ -41,6 +42,7 @@ def home(request):
             "internal": internal_file_urls,
             "upload_urls": upload_urls,
             "output_link": output_link,
+            "version": __version__,
         },
     )
 
