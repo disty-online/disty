@@ -8,7 +8,7 @@ DEFAULT_UPLOAD_URL_EXPIRY_DAYS = int(
 )
 UPLOAD_FOLDER = os.environ.get("UPLOAD_FOLDER", "documents/")
 
-level = logging.DEBUG if os.environ["DEBUG"] else logging.INFO
+level = logging.DEBUG if os.environ.get("DEBUG", None) else logging.INFO
 
 logger = logging.getLogger()
 logging.basicConfig(
