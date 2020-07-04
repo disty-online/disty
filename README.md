@@ -1,6 +1,33 @@
 # disty
 
-File transfer system.
+Disty is a file transfer system geared towards organizations.
+
+## Use case
+
+### From inside to outside
+
+As a company you need to make files available to customers, vendors and partners. Could be debug logs, temporary licenses, quick fixes or any other kind of artifacts.
+You don't want or can't use external cloud solutions like Dropbox, Google Drive or One Drive due to company policies or lack of fine-grained control.
+
+### From outside to inside
+
+You need to receive large files from 3rd parties, which certainly exceed the limit of email attachments. Your counter-part also can't use any vendor or 3rd party tool to upload you the files, so you find yourself in a situation where the file exchange cannot happend easily.
+
+Disty allows internal users to upload files and create download restrictions based on number of downloads of expiry date for the link.
+It also allows internal users to create unique URLs where 3rd parties are able to upload files for them.
+
+Access to files are registered and can be audited later.
+
+### Planned features
+
+1. Password support for downloadable files
+1. Additional types of backend storage (currently only local disk supported)
+
+### Out of scope features
+
+1. End-to-end encryption
+
+Disty is a tool for organizations. Individual users cannot expect privacy on the files they share. Encryption at rest and over the wire need to be implemented by the operations team. Administrators will have full visibility of the files contents - which is also a pre-req for auditability.
 
 ## Development
 
