@@ -11,7 +11,7 @@ You don't want or can't use external cloud solutions like Dropbox, Google Drive 
 
 ### From outside to inside
 
-You need to receive large files from 3rd parties, which certainly exceed the limit of email attachments. Your counter-part also can't use any vendor or 3rd party tool to upload you the files, so you find yourself in a situation where the file exchange cannot happend easily.
+You need to receive large files from 3rd parties, which certainly exceed the limit of email attachments. Your counter-part also can't use any vendor or 3rd party tool to upload you the files, so you find yourself in a situation where the file exchange cannot happen easily.
 
 Disty allows internal users to upload files and create download restrictions based on number of downloads of expiry date for the link.
 It also allows internal users to create unique URLs where 3rd parties are able to upload files for them.
