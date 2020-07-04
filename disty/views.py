@@ -1,12 +1,10 @@
 import datetime
 import os
-from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.exceptions import PermissionDenied, ObjectDoesNotExist
-from django.core.files.storage import FileSystemStorage
 from django.http import HttpResponse, Http404
-from django.shortcuts import render, redirect, HttpResponseRedirect, get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
 from disty.models import File, DownloadUrl, Access, UploadUrl
 from disty.settings import DEFAULT_DOWNLOAD_EXPIRY_DAYS
@@ -27,13 +25,13 @@ def home(request):
     output_link = request.build_absolute_uri() + "upload/"
     external_file_urls = []
     internal_file_urls = []
-    
+
     for url in urls:
         if url.file.origin == "internal":
             internal_file_urls.append(url)
         else:
             external_file_urls.append(url)
-    
+
     return render(
         request,
         "disty/home.html",
@@ -46,10 +44,11 @@ def home(request):
         },
     )
 
+
 @login_required
 def new_url(request):
     """
-        Creates a url for file upload from external users.
+        Creates a url for for external users so they can upload files.
     """
     user = User.objects.get(username=request.user)
     if request.method == "POST":
@@ -185,9 +184,7 @@ def upload(request, ruuid):
             file.storage_location = "local"
             file.origin = url.url
             file.save()
-            default_expiry = timezone.now() + datetime.timedelta(
-                days=DEFAULT_DOWNLOAD_EXPIRY_DAYS
-            )
+            default_expiry = now + datetime.timedelta(days=DEFAULT_DOWNLOAD_EXPIRY_DAYS)
             url = DownloadUrl(
                 created_at=now, owner=owner, expiry=default_expiry, file=file
             )
@@ -206,7 +203,7 @@ def download(request, uuid):
         raise PermissionDenied
     try:
         url = DownloadUrl.objects.get(url=uuid)
-    except ObjectDoesNotExist as err:
+    except ObjectDoesNotExist:
         raise Http404
     user = request.user
     if url.owner != user and url.expiry < timezone.now():

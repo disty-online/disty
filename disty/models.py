@@ -1,11 +1,10 @@
 import hashlib
+import os
 import uuid
 from django.db import models
 from django.conf import settings
-from django.db.models.signals import post_delete
 from django.dispatch import receiver
 from disty.settings import DEFAULT_DOWNLOAD_LIMIT, UPLOAD_FOLDER
-import os
 
 
 class File(models.Model):
