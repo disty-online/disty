@@ -20,18 +20,20 @@ poetry shell
 poetry install
 ```
 
-2. Configure your environment variables as per `config.env`
+2. Configure your environment variables as per `development.env`
 
-3. Source from the file: `source config.env`
+3. Source from the file: `source development.env`
 
 4. Run the Django application:
    `python manage.py runserver`
 
 ## Production
 
+1. Customise your `production.env`
+
 ```
 docker build . --name disty
-docker run -d --env-file config.env -p 8000:8000 -v /documents/volume/path:/app/documents/ disty
+docker run -d --env-file production.env -p 8000:8000 -v /documents/volume/path:/app/documents/ distyonline/disty
 ```
 
-If you changed the _UPLOAD_FOLDER_ in your config.env make sure you map the volume accordingly.
+If you changed the _UPLOAD_FOLDER_ in your production.env make sure you map the volume accordingly.
