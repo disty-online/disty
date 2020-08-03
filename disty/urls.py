@@ -11,6 +11,7 @@ urlpatterns = [
     url(r"^$", views.home, name="home"),
     url(r"^user_uploaded/", views.files_by_user, name="files_by_user"),
     url(r"^external_files/", views.files_for_user, name="files_for_user"),
+    url(r"^created_links/", views.links_by_user, name="links_by_user"),
     url(r"^access/", views.access, name="access"),
     url(r"^download/(?P<uuid>.*)$", views.download, name="download"),
     url(r"^edit_upload/form/(?P<url>.*)$", views.edit_upload, name="edit_upload"),

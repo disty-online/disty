@@ -80,6 +80,19 @@ def files_for_user(request):
 
 
 @login_required
+def links_by_user(request):
+    user = User.objects.get(username=request.user)
+    upload_urls = UploadUrl.objects.filter(owner=user.id)
+    output_link = request.build_absolute_uri() + "upload/"
+
+    return render(
+        request,
+        "disty/links_by_user.html",
+        {"user": user, "upload_urls": upload_urls, "output_link": output_link,},
+    )
+
+
+@login_required
 def new_url(request):
     """
         Creates a url for for external users so they can upload files.
