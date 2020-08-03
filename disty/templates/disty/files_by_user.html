@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block content %}
+{% include 'disty/navigation.html' %}
+
+<p class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2 pt-8">Files uploaded by
+    {{ user }}:</p>
+<table class="table-auto">
+    <thead>
+        <tr class="bg-gray-500">
+            <th class="rounded-tl-lg px-4 py-2 tracking-wide text-sm font-bold text-gray-100">Description</th>
+            <th class="px-4 py-2 tracking-wide text-sm font-bold text-gray-100">Name</th>
+            <th class="px-4 py-2 tracking-wide text-sm font-bold text-gray-100">Created at</th>
+            <th class="px-4 py-2 tracking-wide text-sm font-bold text-gray-100">Expiry by</th>
+            <th class="rounded-tr-lg px-4 py-2 tracking-wide text-sm font-bold text-gray-100">Downloads remaining</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for url in files %}
+        {% if forloop.last %}
+        <tr class="hover:bg-red-100">
+            <td class="border-l border-b border-gray-500 px-4 py-2 tracking-wide text-sm">{{ url.file.description }}
+            </td>
+            <td class="border-b border-gray-500 px-4 py-2 tracking-wide text-sm"><a class="underline"
+                    href="download/{{ url.url }}">{{ url.file.name}}</a></td>
+            <td class="border-b border-gray-500 px-4 py-2 tracking-wide text-sm">{{ url.created_at }}</td>
+            <td class="border-b border-gray-500 px-4 py-2 tracking-wide text-sm">{{ url.expiry }} (<a class="underline"
+                    href="edit_upload/form/{{ url.url }}">edit</a>)</td>
+            <td class="border-r border-b border-gray-500 px-4 py-2 tracking-wide text-sm">{{ url.download_limit }} (<a
+                    class="underline" href="edit_upload/form/{{ url.url }}">edit</a>)</td>
+        </tr>
+        {% else %}
+        <tr class="hover:bg-red-100">
+            <td class="border-l border-gray-500 px-4 py-2 tracking-wide text-sm">{{ url.file.description }}</td>
+            <td class="border-gray-500 px-4 py-2 tracking-wide text-sm"><a class="underline"
+                    href="download/{{ url.url }}">{{ url.file.name}}</a></td>
+            <td class="border-gray-500 px-4 py-2 tracking-wide text-sm">{{ url.created_at }}</td>
+            <td class="border-gray-500 px-4 py-2 tracking-wide text-sm">{{ url.expiry }} (<a class="underline"
+                    href="edit_upload/form/{{ url.url }}">edit</a>)</td>
+            <td class="border-r border-gray-500 px-4 py-2 tracking-wide text-sm">{{ url.download_limit }} (<a
+                    class="underline" href="edit_upload/form/{{ url.url }}">edit</a>)</td>
+        </tr>
+        {% endif %}
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

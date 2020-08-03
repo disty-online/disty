@@ -48,6 +48,21 @@ def home(request):
 
 
 @login_required
+def files_by_user(request):
+    user = User.objects.get(username=request.user)
+    urls = DownloadUrl.objects.filter(owner=user.id)
+    internal_file_urls = []
+
+    for url in urls:
+        if url.file.origin == "internal":
+            internal_file_urls.append(url)
+
+    return render(
+        request, "disty/files_by_user.html", {"user": user, "files": internal_file_urls}
+    )
+
+
+@login_required
 def new_url(request):
     """
         Creates a url for for external users so they can upload files.
