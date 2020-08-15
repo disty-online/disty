@@ -2,37 +2,43 @@
 {% block content %}
 {% include 'disty/navigation.html' %}
 
-<p class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2 pt-10">Links created by
-    {{ user }}:</p>
-<table class="table-auto">
-    <thead>
-        <tr class="bg-gray-500">
-            <th class="rounded-tl-lg px-4 py-2 tracking-wide text-sm font-bold text-gray-100">Description</th>
-            <th class="px-4 py-2 tracking-wide text-sm font-bold text-gray-100">Created at</th>
-            <th class="rounded-tr-lg px-4 py-2 tracking-wide text-sm font-bold text-gray-100">Expiry by</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for obj in upload_urls %}
-        {% if forloop.last %}
-        <tr class="hover:bg-red-100">
-            <td class="border-b border-l border-gray-500 px-4 py-2 tracking-wide text-sm"><a class="underline"
-                    href="{{ output_link }}{{ obj.url }}">{{ obj.description }}</a></td>
-            <td class="border-b border-gray-500 px-4 py-2 tracking-wide text-sm">{{ obj.created_at }}</td>
-            <td class="border-b border-r border-gray-500 px-4 py-2 tracking-wide text-sm">{{ obj.expiry }}(<a
-                    class="underline" href="edit_upload_url/form/{{ obj.url }}">edit</a>)</td>
-        </tr>
-        {% else %}
-        <tr class="hover:bg-red-100">
-            <td class="border-l border-gray-500 px-4 py-2 tracking-wide text-sm"><a class="underline"
-                    href="{{ output_link }}{{ obj.url }}">{{ obj.description }}</a></td>
-            <td class="border-gray-500 px-4 py-2 tracking-wide text-sm">{{ obj.created_at }}</td>
-            <td class="border-r border-gray-500 px-4 py-2 tracking-wide text-sm">{{ obj.expiry }}(<a class="underline"
-                    href="edit_upload_url/form/{{ obj.url }}">edit</a>)</td>
-        </tr>
-        {% endif %}
-        {% endfor %}
-    </tbody>
-</table>
-
-{% endblock %}
+<div class="container max-w-screen-lg mx-auto mt-6">
+    <p class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2 pt-10">Links created by
+        {{ user }}:</p>
+    <table class="table-fixed">
+        <thead>
+            <tr class="bg-gray-200">
+                <th
+                    class="border-l border-t border-b border-gray-300 px-4 py-2 tracking-wide text-sm font-bold text-gray-700">
+                    Description</th>
+                <th class="border-t border-b border-gray-300 px-4 py-2 tracking-wide text-sm font-bold text-gray-700">
+                    Created at</th>
+                <th
+                    class="border-r border-t border-b border-gray-300 px-4 py-2 tracking-wide text-sm font-bold text-gray-700">
+                    Expiry by</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for obj in upload_urls %}
+            {% if forloop.last %}
+            <tr class="hover:bg-gray-200">
+                <td class="border-b border-l border-gray-300 px-4 py-2 tracking-wide text-sm"><a class="underline"
+                        href="{{ output_link }}{{ obj.url }}">{{ obj.description }}</a></td>
+                <td class="border-b border-gray-300 px-4 py-2 tracking-wide text-sm">{{ obj.created_at }}</td>
+                <td class="border-b border-r border-gray-300 px-4 py-2 tracking-wide text-sm">{{ obj.expiry }} <a
+                        class="underline text-xs text-gray-500" href="edit_upload_url/form/{{ obj.url }}">edit</a></td>
+            </tr>
+            {% else %}
+            <tr class="hover:bg-gray-200">
+                <td class="border-l border-gray-300 px-4 py-2 tracking-wide text-sm"><a class="underline"
+                        href="{{ output_link }}{{ obj.url }}">{{ obj.description }}</a></td>
+                <td class="border-gray-300 px-4 py-2 tracking-wide text-sm">{{ obj.created_at }}</td>
+                <td class="border-r border-gray-300 px-4 py-2 tracking-wide text-sm">{{ obj.expiry }} <a
+                        class="underline text-xs text-gray-500" href="edit_upload_url/form/{{ obj.url }}">edit</a></td>
+            </tr>
+            {% endif %}
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endblock %}
+</div>
