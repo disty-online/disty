@@ -20,10 +20,10 @@ from disty.forms import (
 
 @login_required
 def home(request):
+    now = timezone.now()
     user = User.objects.get(username=request.user)
     urls = DownloadUrl.objects.filter(owner=user.id)
     upload_urls = UploadUrl.objects.filter(owner=user.id)
-    output_link = request.build_absolute_uri() + "upload/"
     external_file_urls = []
     internal_file_urls = []
 
@@ -33,6 +33,16 @@ def home(request):
         else:
             external_file_urls.append(url)
 
+    available_downloads = 0
+    for file in internal_file_urls:
+        if file.expiry > now and file.download_limit > 0:
+            available_downloads += 1
+
+    available_links = 0
+    for link in upload_urls:
+        if link.expiry > now:  # is this all to this condition???
+            available_links += 1
+
     return render(
         request,
         "disty/home.html",
@@ -40,8 +50,9 @@ def home(request):
             "user": user,
             "external": external_file_urls,
             "internal": internal_file_urls,
+            "available_downloads": available_downloads,
+            "available_links": available_links,
             "upload_urls": upload_urls,
-            "output_link": output_link,
             "version": __version__,
         },
     )
@@ -83,7 +94,7 @@ def files_for_user(request):
 def links_by_user(request):
     user = User.objects.get(username=request.user)
     upload_urls = UploadUrl.objects.filter(owner=user.id)
-    output_link = request.build_absolute_uri() + "upload/"
+    output_link = request.build_absolute_uri().replace("created_links/", f"upload/")
 
     return render(
         request,

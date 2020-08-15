@@ -2,115 +2,76 @@
 {% block content %}
 {% include 'disty/navigation.html' %}
 
-<p class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2 pt-8">Files uploaded by {{ user }}:</p>
-<table class="table-auto">
-    <thead>
-        <tr class="bg-gray-500">
-            <th class="rounded-tl-lg px-4 py-2 tracking-wide text-sm font-bold text-gray-100">Description</th>
-            <th class="px-4 py-2 tracking-wide text-sm font-bold text-gray-100">Name</th>
-            <th class="px-4 py-2 tracking-wide text-sm font-bold text-gray-100">Created at</th>
-            <th class="px-4 py-2 tracking-wide text-sm font-bold text-gray-100">Expiry by</th>
-            <th class="rounded-tr-lg px-4 py-2 tracking-wide text-sm font-bold text-gray-100">Downloads remaining</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for url in internal %}
-        {% if forloop.last %}
-        <tr class="hover:bg-red-100">
-            <td class="border-l border-b border-gray-500 px-4 py-2 tracking-wide text-sm">{{ url.file.description }}
-            </td>
-            <td class="border-b border-gray-500 px-4 py-2 tracking-wide text-sm"><a class="underline"
-                    href="download/{{ url.url }}">{{ url.file.name}}</a></td>
-            <td class="border-b border-gray-500 px-4 py-2 tracking-wide text-sm">{{ url.created_at }}</td>
-            <td class="border-b border-gray-500 px-4 py-2 tracking-wide text-sm">{{ url.expiry }} (<a class="underline"
-                    href="edit_upload/form/{{ url.url }}">edit</a>)</td>
-            <td class="border-r border-b border-gray-500 px-4 py-2 tracking-wide text-sm">{{ url.download_limit }} (<a
-                    class="underline" href="edit_upload/form/{{ url.url }}">edit</a>)</td>
-        </tr>
-        {% else %}
-        <tr class="hover:bg-red-100">
-            <td class="border-l border-gray-500 px-4 py-2 tracking-wide text-sm">{{ url.file.description }}</td>
-            <td class="border-gray-500 px-4 py-2 tracking-wide text-sm"><a class="underline"
-                    href="download/{{ url.url }}">{{ url.file.name}}</a></td>
-            <td class="border-gray-500 px-4 py-2 tracking-wide text-sm">{{ url.created_at }}</td>
-            <td class="border-gray-500 px-4 py-2 tracking-wide text-sm">{{ url.expiry }} (<a class="underline"
-                    href="edit_upload/form/{{ url.url }}">edit</a>)</td>
-            <td class="border-r border-gray-500 px-4 py-2 tracking-wide text-sm">{{ url.download_limit }} (<a
-                    class="underline" href="edit_upload/form/{{ url.url }}">edit</a>)</td>
-        </tr>
-        {% endif %}
-        {% endfor %}
-    </tbody>
-</table>
+<!-- box-shadow: 0 10px 15px -3px rgba(0,0,0,.5), 0 4px 6px -2px rgba(0,0,0,.05); -->
 
-<p class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2 pt-10">Files externally uploaded for
-    {{ user }}:</p>
-<table class="table-auto">
-    <thead>
-        <tr class="bg-gray-500">
-            <th class="rounded-tl-lg px-4 py-2 tracking-wide text-sm font-bold text-gray-100">
-                Description</th>
-            <th class="px-4 py-2 tracking-wide text-sm font-bold text-gray-100">Name</th>
-            <th class="px-4 py-2 tracking-wide text-sm font-bold text-gray-100">Created at</th>
-            <th class="rounded-tr-lg  px-4 py-2 tracking-wide text-sm font-bold text-gray-100">Uploaded from</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for url in external %}
-        {% if forloop.last %}
-        <tr class="hover:bg-red-100">
-            <td class="border-l border-b border-gray-500 px-4 py-2 tracking-wide text-sm">{{ url.file.description }}
-            </td>
-            <td class="border-b border-gray-500 px-4 py-2 tracking-wide text-sm"><a class="underline"
-                    href="download/{{ url.url }}">{{ url.file.name}}</a></td>
-            <td class="border-b border-gray-500 px-4 py-2 tracking-wide text-sm">{{ url.created_at }}</td>
-            <td class="border-r border-b border-gray-500 px-4 py-2 tracking-wide text-sm">{{ url.file.origin }}</td>
-        </tr>
-        {% else %}
-        <tr class="hover:bg-red-100">
-            <td class="border-l border-gray-500 px-4 py-2 tracking-wide text-sm">{{ url.file.description }}</td>
-            <td class="border-gray-500 px-4 py-2 tracking-wide text-sm"><a class="underline"
-                    href="download/{{ url.url }}">{{ url.file.name}}</a></td>
-            <td class="border-gray-500 px-4 py-2 tracking-wide text-sm">{{ url.created_at }}</td>
-            <td class="border-r border-gray-500 px-4 py-2 tracking-wide text-sm">{{ url.file.origin }}</td>
-        </tr>
-        {% endif %}
-        {% endfor %}
-    </tbody>
-</table>
+<div class="flex mt-16">
 
-<p class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2 pt-10">Links created by
-    {{ user }}:</p>
-<table class="table-auto">
-    <thead>
-        <tr class="bg-gray-500">
-            <th class="rounded-tl-lg px-4 py-2 tracking-wide text-sm font-bold text-gray-100">Description</th>
-            <th class="px-4 py-2 tracking-wide text-sm font-bold text-gray-100">Created at</th>
-            <th class="rounded-tr-lg px-4 py-2 tracking-wide text-sm font-bold text-gray-100">Expiry by</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for obj in upload_urls %}
-        {% if forloop.last %}
-        <tr class="hover:bg-red-100">
-            <td class="border-b border-l border-gray-500 px-4 py-2 tracking-wide text-sm"><a class="underline"
-                    href="{{ output_link }}{{ obj.url }}">{{ obj.description }}</a></td>
-            <td class="border-b border-gray-500 px-4 py-2 tracking-wide text-sm">{{ obj.created_at }}</td>
-            <td class="border-b border-r border-gray-500 px-4 py-2 tracking-wide text-sm">{{ obj.expiry }}(<a
-                    class="underline" href="edit_upload_url/form/{{ obj.url }}">edit</a>)</td>
-        </tr>
-        {% else %}
-        <tr class="hover:bg-red-100">
-            <td class="border-l border-gray-500 px-4 py-2 tracking-wide text-sm"><a class="underline"
-                    href="{{ output_link }}{{ obj.url }}">{{ obj.description }}</a></td>
-            <td class="border-gray-500 px-4 py-2 tracking-wide text-sm">{{ obj.created_at }}</td>
-            <td class="border-r border-gray-500 px-4 py-2 tracking-wide text-sm">{{ obj.expiry }}(<a class="underline"
-                    href="edit_upload_url/form/{{ obj.url }}">edit</a>)</td>
-        </tr>
-        {% endif %}
-        {% endfor %}
-    </tbody>
-</table>
+    <div class="flex-1">
+        <p class="block uppercase tracking-wide text-gray-700 text-xs text-center font-bold mb-10 pt-10">Files uploaded
+            by
+            {{ user }}
+        </p>
+        <div class="max-w-sm rounded overflow-hidden shadow-lg mx-40">
+            <div class="px-6 py-4 text-center">
+                <p class="font-bold text-xl mb-2">Total Files</p>
+                <a href="{% url 'files_by_user' %}"
+                    class="text-gray-500 font-bold text-4xl hover:text-red-300">{{ internal|length }}</a>
+                <p class="font-bold text-xl mb-2">Downloadable</p>
+                <p class="text-gray-500 font-bold text-4xl">
+                    {{ available_downloads }}
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="flex-1">
+        <p class="block uppercase tracking-wide text-gray-700 text-xs text-center font-bold mb-10 pt-10">Links by
+            {{ user }}</p>
+        <div class="max-w-sm rounded overflow-hidden shadow-lg mx-40">
+            <div class="px-6 py-4 text-center">
+                <p class="font-bold text-xl mb-2">Total</p>
+                <a href="{% url 'links_by_user' %}"
+                    class="text-gray-500 font-bold text-4xl hover:text-red-300">{{ upload_urls|length }}</a>
+                <p class="font-bold text-xl mb-2">Valid</p>
+                <p class="text-gray-500 font-bold text-4xl">
+                    {{ available_links }}
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container max-w-screen-md mx-auto mt-16">
+    <p class="block uppercase tracking-wide text-gray-700 text-xs text-center font-bold mb-10 pt-10">Files uploaded for
+        {{ user }}</p>
+    <div class="max-w-2xl ml-16 rounded overflow-hidden shadow-lg">
+        <div class="px-6 py-4 text-center">
+            <p class="font-bold text-xl mb-2">Total Files</p>
+            <a href="{% url 'files_for_user' %}"
+                class="text-gray-500 font-bold text-4xl hover:text-red-300">{{ external|length }} </a>
+        </div>
+        <table class="table-fixed">
+            <thead>
+                <tr>
+                    <th class="w-1/2 px-4 py-2 tracking-wide text-md font-bold text-gray-700 text-left">
+                        Description</th>
+                    <th class="w-1/2 px-4 py-2 tracking-wide text-md font-bold text-gray-700 text-right">Uploaded
+                        from
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for url in external|slice:"-3:" %}
+                <tr>
+                    <td class="px-4 py-2 tracking-wide text-sm text-left">{{ url.file.description }}</td>
+                    <td class="px-4 py-2 tracking-wide text-sm text-right">{{ url.file.origin }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
 
 <p class="pt-4 text-gray-500 text-xs">
     <a href="https://github.com/disty-online/disty">Disty Online ({{ version }})</a>: Open source file uploader.
