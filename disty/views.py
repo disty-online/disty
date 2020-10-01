@@ -40,7 +40,7 @@ def home(request):
 
     available_links = 0
     for link in upload_urls:
-        if link.expiry > now:  # is this all to this condition???
+        if link.expiry > now:
             available_links += 1
 
     return render(
